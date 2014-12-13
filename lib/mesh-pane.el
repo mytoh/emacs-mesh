@@ -1,4 +1,4 @@
-;;; pane -*- lexical-binding: t; coding: utf-8; -*-
+;;; mesh-pane -*- lexical-binding: t; coding: utf-8; -*-
 
 ;;; Code:
 
@@ -6,16 +6,6 @@
 (require 'eieio)
 (require 'mesh-class "lib/mesh-class")
 (require 'mesh-mode-line "lib/mesh-mode-line")
-
-;; (defmethod mesh:pane--new (session-name tab-name index)
-;;   (cl-letf* ((buffer (get-buffer-create
-;;                       (format"*%s:%s.%s:%s*" session-name tab-name index))))
-;;     (mesh:pane--make-buffer-eshell-mode buffer)
-;;     (make-instance 'mesh:pane
-;;                    :session session-name
-;;                    :tab tab-name
-;;                    :index index
-;;                    :buffer buffer))))
 
 (defmethod mesh:pane--new (session-name tab-name tab-index)
   (cl-letf* ((buffer (mesh:pane--get-buffer-create
@@ -109,7 +99,10 @@
            :tabs (cl-subst new-tab current-tab
                            (mesh:get-tabs current-session)))
          (mesh:tab--subst-session-list
-          new-session current-session))))))
+          new-session current-session)))
+      ;; TODO kill a last pane with a session that belongs to
+      (t
+       ))))
 
 (cl-defun mesh:pane--make-buffer-eshell-mode (buffer)
   (with-current-buffer buffer
@@ -134,8 +127,7 @@
 (cl-defun mesh:pane--find-missing-index (panes)
   )
 
-;; (mesh:pane--new "main" "eshell")
 
 (provide 'mesh-pane)
 
-;;; pane.el ends here
+;;; mesh-pane.el ends here

@@ -1,4 +1,4 @@
-;;; session -*- lexical-binding: t; coding: utf-8; -*-
+;;; mesh-session -*- lexical-binding: t; coding: utf-8; -*-
 
 ;;; Code:
 
@@ -23,8 +23,6 @@
                      :current-tab new-tab
                      :tabs (list new-tab)))))
 
-;; (mesh:session--new "test" mesh:*session-list*)
-
 (provide 'mesh-session)
 
-;;; session.el ends here
+;;; mesh-session.el ends here

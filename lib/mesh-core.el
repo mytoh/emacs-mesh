@@ -1,4 +1,4 @@
-;;; core -*- lexical-binding: t; coding: utf-8; -*-
+;;; mesh-core -*- lexical-binding: t; coding: utf-8; -*-
 
 ;;; Code:
 
@@ -61,4 +61,4 @@
 
 (provide 'mesh-core)
 
-;;; core.el ends here
+;;; mesh-core.el ends here

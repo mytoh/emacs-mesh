@@ -1,4 +1,4 @@
-;;; tab -*- lexical-binding: t; coding: utf-8; -*-
+;;; mesh-tab -*- lexical-binding: t; coding: utf-8; -*-
 
 ;;; Code:
 
@@ -164,4 +164,4 @@
 
 (provide 'mesh-tab)
 
-;;; tab.el ends here
+;;; mesh-tab.el ends here
