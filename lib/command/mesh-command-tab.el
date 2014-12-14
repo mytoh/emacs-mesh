@@ -25,6 +25,9 @@
 (mesh:defcommand mesh:prev-tab
   (mesh:tab--command-prev))
 
+(mesh:defcommand mesh:kill-tab
+  (mesh:tab--command-kill))
+
 (provide 'mesh-command-tab)
 
 ;;; mesh-command-tab.el ends here
