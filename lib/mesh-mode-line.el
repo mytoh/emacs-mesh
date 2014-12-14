@@ -23,7 +23,8 @@
                                    (lambda (pane) (cl-equalp (buffer-name (current-buffer))
                                                         (buffer-name (mesh:get-buffer pane))))
                                    (mesh:get-panes current-tab))))
-             (last-command-name eshell-last-command-name))
+             (last-command-name eshell-last-command-name)
+             (directory-name (abbreviate-file-name (eshell/pwd))))
     (string-join
      (list
       (propertize
@@ -42,7 +43,10 @@
        'face 'font-lock-keyword-face)
       (propertize
        last-command-name
-       'face 'font-lock-function-name-face))
+       'face 'font-lock-function-name-face)
+      (propertize
+       directory-name
+       'face 'font-lock-variable-name-face))
      " ")))
 
 (provide 'mesh-mode-line)
