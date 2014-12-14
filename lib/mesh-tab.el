@@ -64,13 +64,17 @@
              (pane-last-index
               (apply #'max (cl-mapcar
                             (lambda (p) (mesh:get-index p))
-                            (mesh:get-panes current-tab)))))
+                            (mesh:get-panes current-tab))))
+             (pane-missing-indices
+              (mesh:pane--find-missing-index (mesh:get-panes current-tab))))
     (cl-letf* ((new-session current-session)
                (new-tab current-tab)
                (new-pane (mesh:pane--create
                           current-tab
                           (mesh:get-name current-session)
-                          (+ 1 pane-last-index))))
+                          (if pane-missing-indices
+                              (car pane-missing-indices)
+                            (+ 1 pane-last-index)))))
       (cl-letf ((new-window (split-window nil nil 'below)))
         (set-window-buffer new-window (mesh:get-buffer new-pane))
         (select-window new-window))
@@ -93,13 +97,17 @@
              (pane-last-index
               (apply #'max (cl-mapcar
                             (lambda (p) (mesh:get-index p))
-                            (mesh:get-panes current-tab)))))
+                            (mesh:get-panes current-tab))))
+             (pane-missing-indices
+              (mesh:pane--find-missing-index (mesh:get-panes current-tab))))
     (cl-letf* ((new-session current-session)
                (new-tab current-tab)
                (new-pane (mesh:pane--create
                           current-tab
                           (mesh:get-name current-session)
-                          (+ 1 pane-last-index))))
+                          (if pane-missing-indices
+                              (car pane-missing-indices)
+                            (+ 1 pane-last-index)))))
       (cl-letf ((new-window (split-window nil nil 'right)))
         (set-window-buffer new-window (mesh:get-buffer new-pane))
         (select-window new-window))
