@@ -78,28 +78,30 @@
           (t nil))))
 
 (cl-defun mesh:pane--command-kill ()
-  (cl-letf* ((current-session (mesh:current-session))
-             (current-tab (mesh:get-current-tab current-session))
-             (current-pane (mesh:get-current-pane current-tab))
+  (cl-letf* ((old-session (mesh:current-session))
+             (old-tab (mesh:get-current-tab old-session))
+             (old-pane (mesh:get-current-pane old-tab))
              (next-pane
-              (mesh:pane--find-next-pane current-pane
-                                         (mesh:get-panes current-tab))))
+              (mesh:pane--find-next-pane old-pane
+                                         (mesh:get-panes old-tab))))
     (cond
       (next-pane
        (mesh:pane--command-next)
-       (with-current-buffer (mesh:get-buffer current-pane)
-         (kill-buffer-and-window))
-       (cl-letf* ((new-session current-session)
-                  (new-tab current-tab))
+       (with-current-buffer (mesh:get-buffer old-pane)
+         (cl-letf ((window-to-kill (get-buffer-window (mesh:get-buffer old-pane))))
+           (kill-buffer (mesh:get-buffer old-pane))
+           (delete-window window-to-kill)))
+       (cl-letf* ((new-session old-session)
+                  (new-tab old-tab))
          (mesh:set-slots new-tab
            :current-pane next-pane
            :conf (current-window-configuration)
-           :panes (cl-remove current-pane (mesh:get-panes current-tab)))
+           :panes (cl-remove old-pane (mesh:get-panes old-tab)))
          (mesh:set-slots new-session
-           :tabs (cl-subst new-tab current-tab
-                           (mesh:get-tabs current-session)))
+           :tabs (cl-subst new-tab old-tab
+                           (mesh:get-tabs old-session)))
          (mesh:tab--subst-session-list
-          new-session current-session)))
+          new-session old-session)))
       ;; TODO kill a last pane with a session that belongs to
       (t
        ))))
@@ -125,8 +127,19 @@
           pane-index)))
 
 (cl-defun mesh:pane--find-missing-index (panes)
-  )
-
+  (cl-letf ((indices (cl-mapcar #'mesh:get-index panes)))
+    (cl-labels
+        ((rec (lst res)
+           (cond ((and lst
+                       (<= 2 (length lst)))
+                  (append
+                   (if (eq (+ 1 (car lst))
+                           (cadr lst))
+                       '()
+                     (list (+ 1 (car lst))))
+                   (rec (cdr lst) res)))
+                 (t res))))
+      (rec indices '()))))
 
 (provide 'mesh-pane)
 
