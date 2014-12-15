@@ -20,14 +20,13 @@
                  (new-tab current-tab))
         (oset new-tab :conf (current-window-configuration))
         (oset new-session :tabs
-              (cl-subst new-session current-session
-                        mesh:*session-list*))
+              (cl-subst new-tab current-tab current-session-tabs))
         (setq mesh:*session-list*
               (cl-subst new-session current-session
-                        mesh:*session-list*))))
+                        (mesh:session-list)))))
     (cl-letf* ((new-session (mesh:session--new
                              new-session-name
-                             mesh:*session-list*))
+                             (mesh:session-list)))
                (tab (car (mesh:get-tabs new-session)))
                (conf (mesh:get-conf tab)))
       (switch-to-buffer
