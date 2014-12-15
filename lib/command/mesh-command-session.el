@@ -10,7 +10,7 @@
              (if (cl-find-if
                   (lambda (session) (cl-equalp new-session-name
                                           (mesh:get-name session)))
-                  mesh:*session-list*)
+                  (mesh:session-list))
                  (concat new-session-name "*")
                new-session-name)))
     (cl-letf* ((current-session (mesh:current-session))
@@ -37,7 +37,7 @@
          mesh:get-buffer))
       (mesh:set-current-session new-session)
       (setq mesh:*session-list*
-            (append mesh:*session-list* (list new-session))))))
+            (append (mesh:session-list) (list new-session))))))
 
 (cl-defun mesh:kill-session ())
 (cl-defun mesh:next-session ())
