@@ -20,7 +20,9 @@
   (interactive)
   (mesh:session--command-next))
 
-(cl-defun mesh:prev-session ())
+(cl-defun mesh:prev-session ()
+  (interactive)
+  (mesh:session--command-prev))
 
 (provide 'mesh-command-session)
 
