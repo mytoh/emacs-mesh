@@ -10,21 +10,27 @@
 (require 'mesh-tab "lib/mesh-tab")
 (require 'mesh-pane "lib/mesh-pane")
 
+;;;###autoload
 (mesh:defcommand mesh:split-tab
   (mesh:tab--command-split))
 
+;;;###autoload
 (mesh:defcommand mesh:new-tab
   (mesh:tab--command-new))
 
+;;;###autoload
 (mesh:defcommand mesh:vsplit-tab
   (mesh:tab--command-vsplit))
 
+;;;###autoload
 (mesh:defcommand mesh:next-tab
   (mesh:tab--command-next))
 
+;;;###autoload
 (mesh:defcommand mesh:prev-tab
   (mesh:tab--command-prev))
 
+;;;###autoload
 (mesh:defcommand mesh:kill-tab
   (mesh:tab--command-kill))
 

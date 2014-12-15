@@ -10,14 +10,15 @@
 (require 'mesh-tab "lib/mesh-tab")
 (require 'mesh-pane "lib/mesh-pane")
 
+;;;###autoload
 (mesh:defcommand mesh:kill-pane
   (mesh:pane--command-kill))
 
+;;;###autoload
 (mesh:defcommand mesh:next-pane
   (mesh:pane--command-next))
 
 (cl-defun mesh:prev-pane ())
-
 
 
 (provide 'mesh-command-pane)

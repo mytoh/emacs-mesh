@@ -10,6 +10,7 @@
 (require 'mesh-tab "lib/mesh-tab")
 (require 'mesh-pane "lib/mesh-pane")
 
+;;;###autoload
 (cl-defun mesh:switch ()
   (interactive)
   (if (mesh:inside-session-p)
