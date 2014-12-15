@@ -6,7 +6,7 @@
 ;;;###autoload
 (cl-defun mesh:new-session (new-session-name)
   (interactive "sSession name: ")
-  (mesh:session--create new-session-name))
+  (mesh:session--command-create new-session-name))
 
 (cl-defun mesh:kill-session ())
 (cl-defun mesh:next-session ())

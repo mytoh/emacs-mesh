@@ -23,7 +23,7 @@
                      :current-tab new-tab
                      :tabs (list new-tab)))))
 
-(cl-defun mesh:sesssion--create (new-session-name)
+(cl-defun mesh:sesssion--command-create (new-session-name)
   (cl-letf ((new-session-name
              (if (cl-find-if
                   (lambda (session) (cl-equalp new-session-name
