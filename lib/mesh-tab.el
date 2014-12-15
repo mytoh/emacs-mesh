@@ -133,16 +133,16 @@
              (current-tab (mesh:get-current-tab current-session))
              (current-tabs (mesh:get-tabs current-session))
              (next-tab (mesh:tab--find-next current-tab current-tabs)))
-
-    (cl-letf* ((new-current-tab current-tab)
-               (new-current-session current-session))
-      (oset new-current-tab :conf (current-window-configuration))
-      (oset new-current-session :tabs
-            (cl-subst new-current-tab current-tab (mesh:get-tabs current-session)))
-      (oset new-current-session :current-tab next-tab)
-      (setq mesh:*session-list*
-            (cl-subst new-current-session current-session mesh:*session-list*))
-      (set-window-configuration (mesh:get-conf next-tab)))))
+    (when next-tab
+      (cl-letf* ((new-current-tab current-tab)
+                 (new-current-session current-session))
+        (oset new-current-tab :conf (current-window-configuration))
+        (oset new-current-session :tabs
+              (cl-subst new-current-tab current-tab (mesh:get-tabs current-session)))
+        (oset new-current-session :current-tab next-tab)
+        (setq mesh:*session-list*
+              (cl-subst new-current-session current-session mesh:*session-list*))
+        (set-window-configuration (mesh:get-conf next-tab))))))
 
 (defmethod mesh:tab--find-next ((current-tab mesh:tab) tabs)
   (cl-letf* ((current-tab-pos (cl-position
@@ -152,24 +152,24 @@
            nil)
           ((eq (- (length tabs) 1) current-tab-pos)
            (car tabs))
-          ((< current-tab-pos (- (length tabs) 1))
-           (cl-nth-value (+ current-tab-pos 1) tabs))
-          (t nil))))
+          (t
+           (cl-nth-value (+ current-tab-pos 1) tabs)))))
 
 (cl-defun mesh:tab--command-prev ()
   (cl-letf* ((current-session (mesh:current-session))
              (current-tab (mesh:get-current-tab current-session))
              (current-tabs (mesh:get-tabs current-session))
              (prev-tab (mesh:tab--find-prev current-tab current-tabs)))
-    (cl-letf* ((new-current-tab current-tab)
-               (new-current-session current-session))
-      (oset new-current-tab :conf (current-window-configuration))
-      (oset new-current-session :tabs
-            (cl-subst new-current-tab current-tab (mesh:get-tabs current-session)))
-      (oset new-current-session :current-tab prev-tab)
-      (setq mesh:*session-list*
-            (cl-subst new-current-session current-session mesh:*session-list*))
-      (set-window-configuration (mesh:get-conf prev-tab)))))
+    (when prev-tab
+      (cl-letf* ((new-current-tab current-tab)
+                 (new-current-session current-session))
+        (oset new-current-tab :conf (current-window-configuration))
+        (oset new-current-session :tabs
+              (cl-subst new-current-tab current-tab (mesh:get-tabs current-session)))
+        (oset new-current-session :current-tab prev-tab)
+        (setq mesh:*session-list*
+              (cl-subst new-current-session current-session mesh:*session-list*))
+        (set-window-configuration (mesh:get-conf prev-tab))))))
 
 (defmethod mesh:tab--find-prev ((current-tab mesh:tab) tabs)
   (cl-letf* ((current-tab-pos (cl-position
