@@ -14,7 +14,12 @@
   (mesh:session--command-create new-session-name))
 
 (cl-defun mesh:kill-session ())
-(cl-defun mesh:next-session ())
+
+;;;###autoload
+(cl-defun mesh:next-session ()
+  (interactive)
+  (mesh:session--command-next))
+
 (cl-defun mesh:prev-session ())
 
 (provide 'mesh-command-session)
