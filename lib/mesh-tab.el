@@ -131,13 +131,8 @@
 (cl-defun mesh:tab--command-next ()
   (cl-letf* ((current-session (mesh:current-session))
              (current-tab (mesh:get-current-tab current-session))
-             (current-tab-index (mesh:get-index current-tab))
-             (next-tab-index (+ 1 current-tab-index))
-             (found-next-tab (cl-find-if
-                              (lambda (tab) (cl-equalp next-tab-index (mesh:get-index tab)))
-                              (mesh:get-tabs current-session)))
-             (next-tab (if found-next-tab found-next-tab
-                         (car (mesh:get-tabs current-session)))))
+             (current-tabs (mesh:get-tabs current-session))
+             (next-tab (mesh:tab--find-next current-tab current-tabs)))
 
     (cl-letf* ((new-current-tab current-tab)
                (new-current-session current-session))
@@ -148,6 +143,18 @@
       (setq mesh:*session-list*
             (cl-subst new-current-session current-session mesh:*session-list*))
       (set-window-configuration (mesh:get-conf next-tab)))))
+
+(defmethod mesh:tab--find-next ((current-tab mesh:tab) tabs)
+  (cl-letf* ((current-tab-pos (cl-position
+                               current-tab
+                               tabs)))
+    (cond ((eq (length tabs) 1)
+           nil)
+          ((eq (- (length tabs) 1) current-tab-pos)
+           (car tabs))
+          ((< current-tab-pos (- (length tabs) 1))
+           (cl-nth-value (+ current-tab-pos 1) tabs))
+          (t nil))))
 
 (cl-defun mesh:tab--command-prev ()
   (cl-letf* ((current-session (mesh:current-session))
