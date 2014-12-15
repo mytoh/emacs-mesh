@@ -35,7 +35,7 @@
 (cl-defun mesh:command--switch-outside ()
   (window-configuration-to-register :mesh-winconf)
   (if mesh:*session-list*
-      (cl-letf* ((session (car mesh:*session-list*))
+      (cl-letf* ((session (mesh:current-session))
                  (conf (thread-first session
                          mesh:get-current-tab
                          mesh:get-conf)))
