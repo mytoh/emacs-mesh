@@ -52,6 +52,7 @@
          mesh:get-panes
          car
          mesh:get-buffer))
+      (delete-other-windows)
       (mesh:set-current-session new-session)
       (setq mesh:*session-list*
             (append (mesh:session-list) (list new-session))))))
