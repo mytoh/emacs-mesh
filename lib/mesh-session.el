@@ -90,6 +90,39 @@
            (cl-nth-value (+ current-session-pos 1) sessions))
           (t nil))))
 
+(cl-defun mesh:session--command-prev ()
+  (cl-letf* ((current-session (mesh:current-session))
+             (prev-session
+              (mesh:session--find-prev-session current-session
+                                               (mesh:session-list))))
+    (when prev-session
+      (cl-letf* ((current-session-tabs (mesh:get-tabs current-session))
+                 (current-session-tab (mesh:get-current-tab current-session)))
+        (cl-letf ((new-session current-session)
+                  (new-tab current-session-tab))
+          (oset new-tab :conf (current-window-configuration))
+          (oset new-session :tabs
+                (cl-subst new-tab current-session-tab current-session-tabs))
+          (setq mesh:*session-list*
+                (cl-subst new-session current-session
+                          (mesh:session-list)))))
+      (cl-letf* ((prev-session-conf (thread-first prev-session
+                                      mesh:get-current-tab
+                                      mesh:get-conf)))
+        (set-window-configuration prev-session-conf)
+        (mesh:set-current-session prev-session)))))
+
+(defmethod mesh:session--find-prev-session ((current-session mesh:session) sessions)
+  (cl-letf* ((current-session-pos (cl-position
+                                   current-session
+                                   sessions)))
+    (cond ((eq (length sessions) 1)
+           nil)
+          ((eq 0 current-session-pos)
+           (car (last sessions)))
+          (t
+           (cl-nth-value (- current-session-pos 1) sessions)))))
+
 (provide 'mesh-session)
 
 ;;; mesh-session.el ends here
