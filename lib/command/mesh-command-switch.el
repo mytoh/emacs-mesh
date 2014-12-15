@@ -28,13 +28,13 @@
             (cl-subst new-tab old-tab tabs))
       (setq mesh:*session-list*
             (cl-subst new-session old-session
-                      mesh:*session-list*))))
+                      (mesh:session-list)))))
   (jump-to-register :mesh-winconf)
   (mesh:unset-inside-session))
 
 (cl-defun mesh:command--switch-outside ()
   (window-configuration-to-register :mesh-winconf)
-  (if mesh:*session-list*
+  (if (mesh:session-list)
       (cl-letf* ((session (mesh:current-session))
                  (conf (thread-first session
                          mesh:get-current-tab
@@ -44,7 +44,7 @@
         (mesh:set-inside-session))
     (cl-letf* ((new-session (mesh:session--new
                              mesh:default-session-name
-                             mesh:*session-list*))
+                             (mesh:session-list)))
                (tab (car (mesh:get-tabs new-session)))
                (conf (mesh:get-conf tab)))
       (if conf
