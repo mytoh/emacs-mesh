@@ -60,8 +60,8 @@
 (cl-defun mesh:session--command-next ()
   (cl-letf* ((current-session (mesh:current-session))
              (next-session
-              (mesh:session--find-next-session current-session
-                                               (mesh:session-list))))
+              (mesh:find-next current-session
+                              (mesh:session-list))))
     (when next-session
       (cl-letf* ((current-session-tabs (mesh:get-tabs current-session))
                  (current-session-tab (mesh:get-current-tab current-session)))
@@ -79,23 +79,11 @@
         (set-window-configuration next-session-conf)
         (mesh:set-current-session next-session)))))
 
-(defmethod mesh:session--find-next-session ((current-session mesh:session) sessions)
-  (cl-letf* ((current-session-pos (cl-position
-                                   current-session
-                                   sessions)))
-    (cond ((eq (length sessions) 1)
-           nil)
-          ((eq (- (length sessions) 1) current-session-pos)
-           (car sessions))
-          ((< current-session-pos (- (length sessions) 1))
-           (cl-nth-value (+ current-session-pos 1) sessions))
-          (t nil))))
-
 (cl-defun mesh:session--command-prev ()
   (cl-letf* ((current-session (mesh:current-session))
              (prev-session
-              (mesh:session--find-prev-session current-session
-                                               (mesh:session-list))))
+              (mesh:find-prev current-session
+                              (mesh:session-list))))
     (when prev-session
       (cl-letf* ((current-session-tabs (mesh:get-tabs current-session))
                  (current-session-tab (mesh:get-current-tab current-session)))
@@ -113,16 +101,6 @@
         (set-window-configuration prev-session-conf)
         (mesh:set-current-session prev-session)))))
 
-(defmethod mesh:session--find-prev-session ((current-session mesh:session) sessions)
-  (cl-letf* ((current-session-pos (cl-position
-                                   current-session
-                                   sessions)))
-    (cond ((eq (length sessions) 1)
-           nil)
-          ((eq 0 current-session-pos)
-           (car (last sessions)))
-          (t
-           (cl-nth-value (- current-session-pos 1) sessions)))))
 
 (provide 'mesh-session)
 

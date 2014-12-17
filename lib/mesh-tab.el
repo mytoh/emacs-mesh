@@ -7,6 +7,7 @@
 (require 'seq)
 
 (require 'mesh-class "lib/mesh-class")
+(require 'mesh-core "lib/mesh-core")
 (require 'mesh-pane "lib/mesh-pane")
 
 (cl-defun mesh:tab--new (tab-name session-name &optional (index 0))
@@ -133,7 +134,7 @@
   (cl-letf* ((current-session (mesh:current-session))
              (current-tab (mesh:get-current-tab current-session))
              (current-tabs (mesh:get-tabs current-session))
-             (next-tab (mesh:tab--find-next current-tab current-tabs)))
+             (next-tab (mesh:find-next current-tab current-tabs)))
     (when next-tab
       (cl-letf* ((new-current-tab current-tab)
                  (new-current-session current-session))
@@ -145,22 +146,11 @@
               (cl-subst new-current-session current-session mesh:*session-list*))
         (set-window-configuration (mesh:get-conf next-tab))))))
 
-(defmethod mesh:tab--find-next ((current-tab mesh:tab) tabs)
-  (cl-letf* ((current-tab-pos (cl-position
-                               current-tab
-                               tabs)))
-    (cond ((eq (length tabs) 1)
-           nil)
-          ((eq (- (length tabs) 1) current-tab-pos)
-           (car tabs))
-          (t
-           (cl-nth-value (+ current-tab-pos 1) tabs)))))
-
 (cl-defun mesh:tab--command-prev ()
   (cl-letf* ((current-session (mesh:current-session))
              (current-tab (mesh:get-current-tab current-session))
              (current-tabs (mesh:get-tabs current-session))
-             (prev-tab (mesh:tab--find-prev current-tab current-tabs)))
+             (prev-tab (mesh:find-prev current-tab current-tabs)))
     (when prev-tab
       (cl-letf* ((new-current-tab current-tab)
                  (new-current-session current-session))
@@ -172,16 +162,6 @@
               (cl-subst new-current-session current-session mesh:*session-list*))
         (set-window-configuration (mesh:get-conf prev-tab))))))
 
-(defmethod mesh:tab--find-prev ((current-tab mesh:tab) tabs)
-  (cl-letf* ((current-tab-pos (cl-position
-                               current-tab
-                               tabs)))
-    (cond ((eq (length tabs) 1)
-           nil)
-          ((eq 0 current-tab-pos)
-           (car (last tabs)))
-          (t
-           (cl-nth-value (- current-tab-pos 1) tabs)))))
 
 
 (provide 'mesh-tab)
