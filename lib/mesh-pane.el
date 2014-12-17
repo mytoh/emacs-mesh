@@ -4,6 +4,7 @@
 
 (require 'cl-lib)
 (require 'eieio)
+(require 'seq)
 (require 'mesh-class "lib/mesh-class")
 (require 'mesh-mode-line "lib/mesh-mode-line")
 
@@ -127,7 +128,7 @@
           pane-index)))
 
 (cl-defun mesh:pane--find-missing-index (panes)
-  (cl-letf ((indices (cl-mapcar #'mesh:get-index panes)))
+  (cl-letf ((indices (seq-map #'mesh:get-index panes)))
     (cl-labels
         ((rec (lst res)
            (cond ((and lst

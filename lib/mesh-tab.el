@@ -4,6 +4,7 @@
 
 (require 'cl-lib)
 (require 'eieio)
+(require 'seq)
 
 (require 'mesh-class "lib/mesh-class")
 (require 'mesh-pane "lib/mesh-pane")
@@ -62,7 +63,7 @@
                             mesh:get-current-tab))
              (pane (mesh:get-current-pane current-tab))
              (pane-last-index
-              (apply #'max (cl-mapcar
+              (apply #'max (seq-map
                             (lambda (p) (mesh:get-index p))
                             (mesh:get-panes current-tab))))
              (pane-missing-indices
@@ -95,7 +96,7 @@
                             mesh:get-current-tab))
              (pane (mesh:get-current-pane current-tab))
              (pane-last-index
-              (apply #'max (cl-mapcar
+              (apply #'max (seq-map
                             (lambda (p) (mesh:get-index p))
                             (mesh:get-panes current-tab))))
              (pane-missing-indices
