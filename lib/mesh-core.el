@@ -59,6 +59,61 @@
     `(cl-locally
          ,@(rec object body '()))))
 
+(defgeneric mesh:find-next ()
+  "find next thing")
+
+(defgeneric mesh:find-prev ()
+  "find prev thing")
+
+(defmethod mesh:find-next ((current-tab mesh:tab) tabs)
+  (cl-letf* ((current-tab-pos (cl-position
+                               current-tab
+                               tabs)))
+    (cond ((eq (length tabs) 1)
+           nil)
+          ((eq (- (length tabs) 1) current-tab-pos)
+           (car tabs))
+          (t
+           (cl-nth-value (+ current-tab-pos 1) tabs)))))
+
+
+(defmethod mesh:find-prev ((current-tab mesh:tab) tabs)
+  (cl-letf* ((current-tab-pos (cl-position
+                               current-tab
+                               tabs)))
+    (cond ((eq (length tabs) 1)
+           nil)
+          ((eq 0 current-tab-pos)
+           (car (last tabs)))
+          (t
+           (cl-nth-value (- current-tab-pos 1) tabs)))))
+
+
+(defmethod mesh:find-next ((current-session mesh:session) sessions)
+  (cl-letf* ((current-session-pos (cl-position
+                                   current-session
+                                   sessions)))
+    (cond ((eq (length sessions) 1)
+           nil)
+          ((eq (- (length sessions) 1) current-session-pos)
+           (car sessions))
+          ((< current-session-pos (- (length sessions) 1))
+           (cl-nth-value (+ current-session-pos 1) sessions))
+          (t nil))))
+
+
+(defmethod mesh:find-prev ((current-session mesh:session) sessions)
+  (cl-letf* ((current-session-pos (cl-position
+                                   current-session
+                                   sessions)))
+    (cond ((eq (length sessions) 1)
+           nil)
+          ((eq 0 current-session-pos)
+           (car (last sessions)))
+          (t
+           (cl-nth-value (- current-session-pos 1) sessions)))))
+
+
 (provide 'mesh-core)
 
 ;;; mesh-core.el ends here
