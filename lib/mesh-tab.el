@@ -145,7 +145,7 @@
         (oset new-current-session :tabs
               (cl-subst new-current-tab current-tab (mesh:get-tabs current-session)))
         (oset new-current-session :current-tab next-tab)
-        (mesh:set-current-session new-session)
+        (mesh:set-current-session new-current-session)
         (setq mesh:*session-list*
               (cl-subst new-current-session current-session mesh:*session-list*))
         (set-window-configuration (mesh:get-conf next-tab))))))
@@ -162,7 +162,7 @@
         (oset new-current-session :tabs
               (cl-subst new-current-tab current-tab (mesh:get-tabs current-session)))
         (oset new-current-session :current-tab prev-tab)
-        (mesh:set-current-session new-session)
+        (mesh:set-current-session new-current-session)
         (setq mesh:*session-list*
               (cl-subst new-current-session current-session mesh:*session-list*))
         (set-window-configuration (mesh:get-conf prev-tab))))))
