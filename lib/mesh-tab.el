@@ -42,21 +42,21 @@
         (oset new-session :tabs
               (cl-subst new-current-tab current-tab current-tabs))
 
-        (oset new-session :tabs
-              (append (mesh:get-tabs new-session)
-                      (list new-tab)))
-        (oset new-session :current-tab new-tab)
-        (setq mesh:*session-list*
-              (cl-subst new-session current-session
-                        mesh:*session-list*))
-
         (cl-letf ((new-pane-buffer
                    (thread-first new-tab
                      mesh:get-panes
                      car
                      mesh:get-buffer)))
           (delete-other-windows)
-          (switch-to-buffer new-pane-buffer))))))
+          (switch-to-buffer new-pane-buffer))
+        (oset new-tab :conf (current-window-configuration))
+        (oset new-session :tabs
+              (append (mesh:get-tabs new-session)
+                      (list new-tab)))
+        (oset new-session :current-tab new-tab)
+        (setq mesh:*session-list*
+              (cl-subst new-session current-session
+                        mesh:*session-list*))))))
 
 (cl-defun mesh:tab--command-split ()
   (cl-letf* ((current-session (mesh:current-session))
