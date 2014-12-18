@@ -47,13 +47,16 @@
                              (mesh:session-list)))
                (tab (car (mesh:get-tabs new-session)))
                (conf (mesh:get-conf tab)))
-      (if conf
-          (set-window-configuration conf)
-        (switch-to-buffer
-         (thread-first tab
-           mesh:get-panes
-           car
-           mesh:get-buffer)))
+      (cond
+        (conf
+         (set-window-configuration conf))
+        (t
+         (switch-to-buffer
+          (thread-first tab
+            mesh:get-panes
+            car
+            mesh:get-buffer))
+         (delete-other-windows)))
       (mesh:set-current-session new-session)
       (setq mesh:*session-list* (list new-session))
       (mesh:set-inside-session))))
