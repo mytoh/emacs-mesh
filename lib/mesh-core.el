@@ -2,6 +2,7 @@
 
 ;;; Code:
 
+(require 'seq)
 (require 'mesh-class "lib/mesh-class")
 
 (defcustom mesh:default-tab-name "eshell"
@@ -74,7 +75,7 @@
           ((eq (- (length tabs) 1) current-tab-pos)
            (car tabs))
           (t
-           (cl-nth-value (+ current-tab-pos 1) tabs)))))
+           (seq-elt tabs (+ current-tab-pos 1))))))
 
 
 (defmethod mesh:find-prev ((current-tab mesh:tab) tabs)
@@ -86,7 +87,7 @@
           ((eq 0 current-tab-pos)
            (car (last tabs)))
           (t
-           (cl-nth-value (- current-tab-pos 1) tabs)))))
+           (seq-elt tabs (- current-tab-pos 1))))))
 
 
 (defmethod mesh:find-next ((current-session mesh:session) sessions)
@@ -98,7 +99,7 @@
           ((eq (- (length sessions) 1) current-session-pos)
            (car sessions))
           ((< current-session-pos (- (length sessions) 1))
-           (cl-nth-value (+ current-session-pos 1) sessions))
+           (seq-elt sessions (+ current-session-pos 1)))
           (t nil))))
 
 
@@ -111,7 +112,7 @@
           ((eq 0 current-session-pos)
            (car (last sessions)))
           (t
-           (cl-nth-value (- current-session-pos 1) sessions)))))
+           (seq-elt sessions (- current-session-pos 1))))))
 
 (cl-defun mesh:find-missing-index (fn lst)
   (cl-letf ((indices (seq-map fn lst)))
