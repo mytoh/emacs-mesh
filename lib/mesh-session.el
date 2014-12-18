@@ -12,7 +12,7 @@
 
 (cl-defun mesh:session--new (session-name sessions)
   (if-let ((found (cl-find-if (lambda (s) (cl-equalp (mesh:get-name s)
-                                                session-name))
+                                                     session-name))
                               sessions)))
       found
     (cl-letf ((new-tab (mesh:tab--new
@@ -27,7 +27,7 @@
   (cl-letf ((new-session-name
              (if (cl-find-if
                   (lambda (session) (cl-equalp new-session-name
-                                          (mesh:get-name session)))
+                                               (mesh:get-name session)))
                   (mesh:session-list))
                  (concat new-session-name "*")
                new-session-name)))
@@ -100,6 +100,36 @@
                                       mesh:get-conf)))
         (set-window-configuration prev-session-conf)
         (mesh:set-current-session prev-session)))))
+
+(cl-defun mesh:session--command-kill ()
+  (cl-letf* ((current-session (mesh:current-session))
+             (current-session-list (mesh:session-list)))
+    (cond ((eq 1 (seq-length current-session-list))
+
+           (cl-letf ((current-tab (mesh:get-current-tab current-session))
+                     (current-tabs (mesh:get-tabs current-session)))
+             (setq mesh:*session-list* nil)
+             (jump-to-register :mesh-winconf)
+             (mesh:unset-inside-session)
+             (seq-each
+              (lambda (tab)
+                (mesh:tab--kill-panes tab))
+              current-tabs)))
+          (t
+           (cl-letf ((current-tab (mesh:get-current-tab current-session))
+                     (current-tabs (mesh:get-tabs current-session))
+                     (next-session (mesh:find-next current-session current-session-list)))
+             (setq mesh:*session-list*
+                   (cl-remove current-session (mesh:session-list)))
+             (cl-letf* ((next-session-conf (thread-first next-session
+                                             mesh:get-current-tab
+                                             mesh:get-conf)))
+               (set-window-configuration next-session-conf)
+               (mesh:set-current-session next-session))
+             (seq-each
+              (lambda (tab)
+                (mesh:tab--kill-panes tab))
+              current-tabs))))))
 
 
 (provide 'mesh-session)
