@@ -167,7 +167,30 @@
               (cl-subst new-current-session current-session mesh:*session-list*))
         (set-window-configuration (mesh:get-conf prev-tab))))))
 
+(cl-defun mesh:tab--command-kill ()
+  (cl-letf ((current-session (mesh:current-session)))
+    (with-slots ((current-tab current-tab)
+                 (current-tabs tabs))
+        current-session
+      (cond ((eq 1 (seq-length current-tabs))
+             t)
+            (t
+             (cl-letf* ((next-tab (mesh:find-next current-tab current-tabs))
+                        (new-current-session current-session))
+               (mesh:tab--kill-panes current-tab)
+               (mesh:set-slots new-current-session
+                 :tabs (cl-remove current-tab current-tabs)
+                 :current-tab next-tab)
+               (mesh:set-current-session new-current-session)
+               (mesh:tab--subst-session-list new-current-session current-session)
+               (set-window-configuration (mesh:get-conf next-tab))))))))
 
+(defmethod mesh:tab--kill-panes ((tab mesh:tab))
+  (seq-each
+   #'kill-buffer
+   (seq-map
+    #'mesh:get-buffer
+    (mesh:get-panes tab))))
 
 (provide 'mesh-tab)
 
