@@ -172,7 +172,7 @@
                  (current-tabs tabs))
         current-session
       (cond ((eq 1 (seq-length current-tabs))
-             t)
+             (mesh:session--command-kill))
             (t
              (cl-letf* ((next-tab (mesh:find-next current-tab current-tabs))
                         (new-current-session current-session))
