@@ -69,7 +69,7 @@
                             (lambda (p) (mesh:get-index p))
                             (mesh:get-panes current-tab))))
              (pane-missing-indices
-              (mesh:pane--find-missing-index (mesh:get-panes current-tab))))
+              (mesh:find-missing-index #'mesh:get-index (mesh:get-panes current-tab))))
     (cl-letf* ((new-session current-session)
                (new-tab current-tab)
                (new-pane (mesh:pane--create
@@ -103,7 +103,7 @@
                             (lambda (p) (mesh:get-index p))
                             (mesh:get-panes current-tab))))
              (pane-missing-indices
-              (mesh:pane--find-missing-index (mesh:get-panes current-tab))))
+              (mesh:find-missing-index #'mesh:get-index (mesh:get-panes current-tab))))
     (cl-letf* ((new-session current-session)
                (new-tab current-tab)
                (new-pane (mesh:pane--create
