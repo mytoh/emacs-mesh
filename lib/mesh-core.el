@@ -113,6 +113,20 @@
           (t
            (cl-nth-value (- current-session-pos 1) sessions)))))
 
+(cl-defun mesh:find-missing-index (fn lst)
+  (cl-letf ((indices (seq-map fn lst)))
+    (cl-labels
+        ((rec (lst res)
+           (cond ((and lst
+                       (<= 2 (length lst)))
+                  (append
+                   (if (eq (+ 1 (car lst))
+                           (cadr lst))
+                       '()
+                     (list (+ 1 (car lst))))
+                   (rec (cdr lst) res)))
+                 (t res))))
+      (rec indices '()))))
 
 (provide 'mesh-core)
 
