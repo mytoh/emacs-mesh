@@ -127,20 +127,6 @@
           tab-index
           pane-index)))
 
-(cl-defun mesh:pane--find-missing-index (panes)
-  (cl-letf ((indices (seq-map #'mesh:get-index panes)))
-    (cl-labels
-        ((rec (lst res)
-           (cond ((and lst
-                       (<= 2 (length lst)))
-                  (append
-                   (if (eq (+ 1 (car lst))
-                           (cadr lst))
-                       '()
-                     (list (+ 1 (car lst))))
-                   (rec (cdr lst) res)))
-                 (t res))))
-      (rec indices '()))))
 
 (provide 'mesh-pane)
 
