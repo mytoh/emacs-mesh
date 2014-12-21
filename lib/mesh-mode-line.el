@@ -14,7 +14,6 @@
 
 (cl-defun mesh:mode-line ()
   (cl-letf* ((current-session (mesh:current-session))
-             (current-session-name (mesh:get-name current-session))
              (current-tab (mesh:get-current-tab current-session))
              (current-tab-name (mesh:get-name current-tab))
              (current-tab-index (mesh:get-index current-tab))
@@ -27,9 +26,6 @@
              (directory-name (abbreviate-file-name (eshell/pwd))))
     (string-join
      (list
-      (propertize
-       current-session-name
-       'face 'font-lock-type-face)
       (concat
        (propertize
         current-tab-name
