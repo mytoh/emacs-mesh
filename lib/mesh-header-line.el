@@ -4,6 +4,7 @@
 
 (require 'cl-lib)
 (require 'eieio)
+(require 'seq)
 
 (require 'mesh-core "lib/mesh-core")
 
