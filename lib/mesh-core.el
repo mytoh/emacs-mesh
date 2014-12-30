@@ -82,12 +82,12 @@
   (cl-letf* ((current-tab-pos (cl-position
                                current-tab
                                tabs)))
-    (cond ((eq (length tabs) 1)
-           nil)
-          ((eq 0 current-tab-pos)
-           (car (last tabs)))
-          (t
-           (seq-elt tabs (- current-tab-pos 1))))))
+    (pcase (length tabs)
+      (`1 nil)
+      ((guard (eq 0 current-tab-pos))
+       (car (last tabs)))
+      (_
+       (seq-elt tabs (- current-tab-pos 1))))))
 
 
 (defmethod mesh:find-next ((current-session mesh:session) sessions)
@@ -107,12 +107,11 @@
   (cl-letf* ((current-session-pos (cl-position
                                    current-session
                                    sessions)))
-    (cond ((eq (length sessions) 1)
-           nil)
-          ((eq 0 current-session-pos)
-           (car (last sessions)))
-          (t
-           (seq-elt sessions (- current-session-pos 1))))))
+    (pcase (length sessions)
+      (`1 nil)
+      ((guard (eq 0 current-session-pos))
+       (car (last sessions)))
+      (_ (seq-elt sessions (- current-session-pos 1))))))
 
 (cl-defun mesh:find-missing-index (fn lst)
   (cl-letf ((indices (seq-map fn lst)))
