@@ -70,12 +70,12 @@
   (cl-letf* ((current-tab-pos (cl-position
                                current-tab
                                tabs)))
-    (cond ((eq (length tabs) 1)
-           nil)
-          ((eq (- (length tabs) 1) current-tab-pos)
-           (car tabs))
-          (t
-           (seq-elt tabs (+ current-tab-pos 1))))))
+    (pcase (- (length tabs) 1)
+      (`0 nil)
+      ((pred (eq  current-tab-pos))
+       (car tabs))
+      (_
+       (seq-elt tabs (+ current-tab-pos 1))))))
 
 
 (defmethod mesh:find-prev ((current-tab mesh:tab) tabs)
@@ -94,13 +94,13 @@
   (cl-letf* ((current-session-pos (cl-position
                                    current-session
                                    sessions)))
-    (cond ((eq (length sessions) 1)
-           nil)
-          ((eq (- (length sessions) 1) current-session-pos)
-           (car sessions))
-          ((< current-session-pos (- (length sessions) 1))
-           (seq-elt sessions (+ current-session-pos 1)))
-          (t nil))))
+    (pcase (- (length sessions) 1)
+      (`0 nil)
+      ((pred (eq current-session-pos))
+       (car sessions))
+      ((pred (< current-session-pos))
+       (seq-elt sessions (+ current-session-pos 1)))
+      (_ nil))))
 
 
 (defmethod mesh:find-prev ((current-session mesh:session) sessions)
