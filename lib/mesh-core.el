@@ -66,6 +66,18 @@
 (defgeneric mesh:find-prev ()
   "find prev thing")
 
+
+(defmethod mesh:find-next ((pane mesh:pane) panes)
+  (cl-letf* ((current-position
+              (cl-position pane panes)))
+    (cond ((eq (length panes) 1)
+           nil)
+          ((eq (- (length panes) 1) current-position)
+           (car panes))
+          ((< current-position (- (length panes) 1))
+           (cl-nth-value (+ current-position 1) panes))
+          (t nil))))
+
 (defmethod mesh:find-next ((current-tab mesh:tab) tabs)
   (cl-letf* ((current-tab-pos (cl-position
                                current-tab

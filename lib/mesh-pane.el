@@ -5,6 +5,7 @@
 (require 'cl-lib)
 (require 'eieio)
 (require 'mesh-class "lib/mesh-class")
+(require 'mesh-core "lib/mesh-core")
 (require 'mesh-mode-line "lib/mesh-mode-line")
 (require 'mesh-header-line "lib/mesh-header-line")
 
@@ -54,8 +55,8 @@
              (current-tab (mesh:get-current-tab current-session))
              (current-pane (mesh:get-current-pane current-tab))
              (next-pane
-              (mesh:pane--find-next-pane current-pane
-                                         (mesh:get-panes current-tab))))
+              (mesh:find-next current-pane
+                              (mesh:get-panes current-tab))))
     (when next-pane
       (cl-letf ((next-pane-buffer (mesh:get-buffer next-pane)))
         (switch-to-buffer-other-window next-pane-buffer)
@@ -70,24 +71,13 @@
           (mesh:tab--subst-session-list
            new-session current-session))))))
 
-(defmethod mesh:pane--find-next-pane ((pane mesh:pane) panes)
-  (cl-letf* ((current-position
-              (cl-position pane panes)))
-    (cond ((eq (length panes) 1)
-           nil)
-          ((eq (- (length panes) 1) current-position)
-           (car panes))
-          ((< current-position (- (length panes) 1))
-           (cl-nth-value (+ current-position 1) panes))
-          (t nil))))
-
 (cl-defun mesh:pane--command-kill ()
   (cl-letf* ((old-session (mesh:current-session))
              (old-tab (mesh:get-current-tab old-session))
              (old-pane (mesh:get-current-pane old-tab))
              (next-pane
-              (mesh:pane--find-next-pane old-pane
-                                         (mesh:get-panes old-tab))))
+              (mesh:find-next old-pane
+                              (mesh:get-panes old-tab))))
     (cond
       (next-pane
        (mesh:pane--command-next)
