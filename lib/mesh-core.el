@@ -11,6 +11,8 @@
 (defcustom mesh:default-session-name "main"
   "default session name")
 
+(defconst mesh:window-configuration-name :mesh-winconf)
+
 (defvar mesh:*session-list* nil)
 
 (cl-defun mesh:session-list ()

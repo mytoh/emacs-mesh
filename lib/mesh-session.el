@@ -110,7 +110,7 @@
            (cl-letf ((current-tab (mesh:get-current-tab current-session))
                      (current-tabs (mesh:get-tabs current-session)))
              (setq mesh:*session-list* nil)
-             (jump-to-register :mesh-winconf)
+             (jump-to-register mesh:window-configuration-name)
              (mesh:unset-inside-session)
              (seq-each
               (lambda (tab)
