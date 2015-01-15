@@ -56,7 +56,7 @@
                      obj
                      (cddr lst)
                      (cons
-                      `(oset ,obj ,(car lst) ,(cadr lst))
+                      `(setf (slot-value ,obj ,(car lst)) ,(cadr lst))
                       res))
                   (reverse res))))
     `(cl-locally
