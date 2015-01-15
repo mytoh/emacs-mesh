@@ -63,10 +63,10 @@
         (cl-letf* ((new-session current-session)
                    (new-tab current-tab))
           (mesh:set-slots new-tab
-            :current-pane next-pane
-            :conf (current-window-configuration))
+            'current-pane next-pane
+            'conf (current-window-configuration))
           (mesh:set-slots new-session
-            :tabs (cl-subst new-tab current-tab
+            'tabs (cl-subst new-tab current-tab
                             (mesh:get-tabs current-session)))
           (mesh:tab--subst-session-list
            new-session current-session))))))
@@ -88,11 +88,11 @@
        (cl-letf* ((new-session old-session)
                   (new-tab old-tab))
          (mesh:set-slots new-tab
-           :current-pane next-pane
-           :conf (current-window-configuration)
-           :panes (cl-remove old-pane (mesh:get-panes old-tab)))
+           'current-pane next-pane
+           'conf (current-window-configuration)
+           'panes (cl-remove old-pane (mesh:get-panes old-tab)))
          (mesh:set-slots new-session
-           :tabs (cl-subst new-tab old-tab
+           'tabs (cl-subst new-tab old-tab
                            (mesh:get-tabs old-session)))
          (mesh:tab--subst-session-list
           new-session old-session)))

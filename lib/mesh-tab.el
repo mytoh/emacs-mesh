@@ -116,11 +116,11 @@
         (set-window-buffer new-window (mesh:get-buffer new-pane))
         (select-window new-window))
       (mesh:set-slots new-tab
-        :current-pane new-pane
-        :panes
+        'current-pane new-pane
+        'panes
         (append (mesh:get-panes current-tab)
                 (list new-pane))
-        :conf (current-window-configuration))
+        'conf (current-window-configuration))
       (setf (mesh:get-tabs new-session)
             (cl-subst new-tab current-tab
                       (mesh:get-tabs current-session)))
@@ -178,8 +178,8 @@
                       (new-current-session current-session))
              (mesh:tab--kill-panes current-tab)
              (mesh:set-slots new-current-session
-               :tabs (cl-remove current-tab current-tabs)
-               :current-tab next-tab)
+               'tabs (cl-remove current-tab current-tabs)
+               'current-tab next-tab)
              (mesh:set-current-session new-current-session)
              (mesh:tab--subst-session-list new-current-session current-session)
              (set-window-configuration (mesh:get-conf next-tab))))))))
