@@ -38,8 +38,8 @@
                  (current-tabs (mesh:get-tabs current-session))
                  (new-session current-session))
 
-        (oset new-current-tab :conf (current-window-configuration))
-        (oset new-session :tabs
+        (setf (mesh:get-conf new-current-tab) (current-window-configuration))
+        (setf (mesh:get-tabs new-session)
               (cl-subst new-current-tab current-tab current-tabs))
 
         (cl-letf ((new-pane-buffer
@@ -49,11 +49,11 @@
                      mesh:get-buffer)))
           (delete-other-windows)
           (switch-to-buffer new-pane-buffer))
-        (oset new-tab :conf (current-window-configuration))
-        (oset new-session :tabs
+        (setf (mesh:get-conf new-tab) (current-window-configuration))
+        (setf (mesh:get-tabs new-session)
               (append (mesh:get-tabs new-session)
                       (list new-tab)))
-        (oset new-session :current-tab new-tab)
+        (setf (mesh:get-current-tab new-session) new-tab)
         (mesh:set-current-session new-session)
         (setq mesh:*session-list*
               (cl-subst new-session current-session
@@ -81,12 +81,12 @@
       (cl-letf ((new-window (split-window nil nil 'below)))
         (set-window-buffer new-window (mesh:get-buffer new-pane))
         (select-window new-window))
-      (oset new-tab :current-pane new-pane)
-      (oset new-tab :panes
+      (setf (mesh:get-current-pane new-tab) new-pane)
+      (setf (mesh:get-panes new-tab)
             (append (mesh:get-panes current-tab)
                     (list new-pane)))
-      (oset new-tab :conf (current-window-configuration))
-      (oset new-session :tabs
+      (setf (mesh:get-conf new-tab) (current-window-configuration))
+      (setf (mesh:get-tabs new-session)
             (cl-subst new-tab current-tab
                       (mesh:get-tabs current-session)))
       (mesh:set-current-session new-session)
@@ -121,7 +121,7 @@
         (append (mesh:get-panes current-tab)
                 (list new-pane))
         :conf (current-window-configuration))
-      (oset new-session :tabs
+      (setf (mesh:get-tabs new-session)
             (cl-subst new-tab current-tab
                       (mesh:get-tabs current-session)))
       (mesh:set-current-session new-session)
@@ -141,10 +141,10 @@
     (when next-tab
       (cl-letf* ((new-current-tab current-tab)
                  (new-current-session current-session))
-        (oset new-current-tab :conf (current-window-configuration))
-        (oset new-current-session :tabs
+        (setf (mesh:get-conf new-current-tab) (current-window-configuration))
+        (setf (mesh:get-tabs new-current-session)
               (cl-subst new-current-tab current-tab (mesh:get-tabs current-session)))
-        (oset new-current-session :current-tab next-tab)
+        (setf (mesh:get-current-tab new-current-session) next-tab)
         (mesh:set-current-session new-current-session)
         (setq mesh:*session-list*
               (cl-subst new-current-session current-session mesh:*session-list*))
@@ -158,10 +158,10 @@
     (when prev-tab
       (cl-letf* ((new-current-tab current-tab)
                  (new-current-session current-session))
-        (oset new-current-tab :conf (current-window-configuration))
-        (oset new-current-session :tabs
+        (setf (mesh:get-conf new-current-tab) (current-window-configuration))
+        (setf (mesh:get-tabs new-current-session)
               (cl-subst new-current-tab current-tab (mesh:get-tabs current-session)))
-        (oset new-current-session :current-tab prev-tab)
+        (setf (mesh:get-current-tab new-current-session) prev-tab)
         (mesh:set-current-session new-current-session)
         (setq mesh:*session-list*
               (cl-subst new-current-session current-session mesh:*session-list*))
