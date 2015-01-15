@@ -23,8 +23,8 @@
              (old-tab (mesh:get-current-tab old-session)))
     (cl-letf* ((new-session old-session)
                (new-tab old-tab))
-      (oset new-tab :conf (current-window-configuration))
-      (oset new-session :tabs
+      (setf (mesh:get-conf new-tab) (current-window-configuration))
+      (setf (mesh:get-tabs new-session)
             (cl-subst new-tab old-tab tabs))
       (setq mesh:*session-list*
             (cl-subst new-session old-session
