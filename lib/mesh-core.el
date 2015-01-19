@@ -36,7 +36,7 @@
 (cl-defun mesh:current-session ()
   mesh:*current-session*)
 
-(defmethod mesh:set-current-session ((session mesh:session))
+(cl-defmethod mesh:set-current-session ((session mesh:session))
   (setq mesh:*current-session* session))
 
 (cl-defmacro mesh:defcommand (name &rest body)
@@ -62,14 +62,14 @@
     `(cl-locally
          ,@(rec object body '()))))
 
-(defgeneric mesh:find-next ()
+(cl-defgeneric mesh:find-next ()
   "find next thing")
 
-(defgeneric mesh:find-prev ()
+(cl-defgeneric mesh:find-prev ()
   "find prev thing")
 
 
-(defmethod mesh:find-next ((pane mesh:pane) panes)
+(cl-defmethod mesh:find-next ((pane mesh:pane) panes)
   (cl-letf* ((current-position
               (cl-position pane panes)))
     (cond ((eq (length panes) 1)
@@ -80,7 +80,7 @@
            (cl-nth-value (+ current-position 1) panes))
           (t nil))))
 
-(defmethod mesh:find-next ((current-tab mesh:tab) tabs)
+(cl-defmethod mesh:find-next ((current-tab mesh:tab) tabs)
   (cl-letf* ((current-tab-pos (cl-position
                                current-tab
                                tabs)))
@@ -92,7 +92,7 @@
        (seq-elt tabs (+ current-tab-pos 1))))))
 
 
-(defmethod mesh:find-prev ((current-tab mesh:tab) tabs)
+(cl-defmethod mesh:find-prev ((current-tab mesh:tab) tabs)
   (cl-letf* ((current-tab-pos (cl-position
                                current-tab
                                tabs)))
@@ -104,7 +104,7 @@
        (seq-elt tabs (- current-tab-pos 1))))))
 
 
-(defmethod mesh:find-next ((current-session mesh:session) sessions)
+(cl-defmethod mesh:find-next ((current-session mesh:session) sessions)
   (cl-letf* ((current-session-pos (cl-position
                                    current-session
                                    sessions)))
@@ -117,7 +117,7 @@
       (_ nil))))
 
 
-(defmethod mesh:find-prev ((current-session mesh:session) sessions)
+(cl-defmethod mesh:find-prev ((current-session mesh:session) sessions)
   (cl-letf* ((current-session-pos (cl-position
                                    current-session
                                    sessions)))

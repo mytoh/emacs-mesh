@@ -9,7 +9,7 @@
 (require 'mesh-mode-line "lib/mesh-mode-line")
 (require 'mesh-header-line "lib/mesh-header-line")
 
-(defmethod mesh:pane--new (session-name tab-name tab-index)
+(cl-defmethod mesh:pane--new (session-name tab-name tab-index)
   (cl-letf* ((buffer (mesh:pane--get-buffer-create
                       session-name tab-name tab-index 0)))
     (mesh:pane--make-buffer-eshell-mode buffer)
@@ -18,7 +18,7 @@
     (mesh:pane--make-pane
      session-name tab-name 0 buffer)))
 
-(defmethod mesh:pane--create ((tab mesh:tab) session-name)
+(cl-defmethod mesh:pane--create ((tab mesh:tab) session-name)
   (cl-letf* ((pane-index 0)
              (tab-name (mesh:get-name tab))
              (tab-index (mesh:get-index tab))
@@ -31,7 +31,7 @@
     (mesh:pane--make-pane
      session-name tab-name pane-index buffer)))
 
-(defmethod mesh:pane--create ((tab mesh:tab) session-name pane-index)
+(cl-defmethod mesh:pane--create ((tab mesh:tab) session-name pane-index)
   (cl-letf* ((tab-name (mesh:get-name tab))
              (tab-index (mesh:get-index tab))
              (buffer (mesh:pane--get-buffer-create
