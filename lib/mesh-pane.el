@@ -75,30 +75,49 @@
   (cl-letf* ((old-session (mesh:current-session))
              (old-tab (mesh:get-current-tab old-session))
              (old-pane (mesh:get-current-pane old-tab))
-             (next-pane
-              (mesh:find-next old-pane
-                              (mesh:get-panes old-tab))))
+             (next-pane (mesh:find-next old-pane
+                                        (mesh:get-panes old-tab)))
+             (next-tab (mesh:find-next old-tab (mesh:get-tabs old-session))))
     (cond
       (next-pane
        (mesh:pane--command-next)
-       (with-current-buffer (mesh:get-buffer old-pane)
-         (cl-letf ((window-to-kill (get-buffer-window (mesh:get-buffer old-pane))))
-           (kill-buffer (mesh:get-buffer old-pane))
-           (delete-window window-to-kill)))
-       (cl-letf* ((new-session old-session)
-                  (new-tab old-tab))
-         (mesh:set-slots new-tab
-           'current-pane next-pane
-           'conf (current-window-configuration)
-           'panes (cl-remove old-pane (mesh:get-panes old-tab)))
-         (mesh:set-slots new-session
-           'tabs (cl-subst new-tab old-tab
-                           (mesh:get-tabs old-session)))
-         (mesh:tab--subst-session-list
-          new-session old-session)))
-      ;; TODO kill a last pane with a session that belongs to
+       (mesh:pane--kill old-session old-tab old-pane))
+      (next-tab
+       (cl-letf ((current-session old-session))
+         (with-slots ((current-tab current-tab)
+                      (current-tabs tabs))
+             current-session
+           (cl-letf* ((next-tab (mesh:find-next current-tab current-tabs))
+                      (new-current-session current-session))
+             (mesh:tab--kill-panes current-tab)
+             (mesh:set-slots new-current-session
+               'tabs (cl-remove current-tab current-tabs)
+               'current-tab next-tab)
+             (mesh:set-current-session new-current-session)
+             (mesh:tab--subst-session-list new-current-session current-session)
+             (set-window-configuration (mesh:get-conf next-tab))))))
       (t
+       ;; TODO kill session
        ))))
+
+(cl-defun mesh:pane--kill (session tab pane)
+  (cl-letf* ((old-session session)
+             (old-tab tab)
+             (old-pane pane))
+    (with-current-buffer (mesh:get-buffer old-pane)
+      (cl-letf ((window-to-kill (get-buffer-window (mesh:get-buffer old-pane))))
+        (kill-buffer (mesh:get-buffer old-pane))
+        (delete-window window-to-kill)))
+    (cl-letf* ((new-session old-session)
+               (new-tab old-tab))
+      (mesh:set-slots new-tab
+        'conf (current-window-configuration)
+        'panes (cl-remove old-pane (mesh:get-panes old-tab)))
+      (mesh:set-slots new-session
+        'tabs (cl-subst new-tab old-tab
+                        (mesh:get-tabs old-session)))
+      (mesh:tab--subst-session-list
+       new-session old-session))))
 
 (cl-defun mesh:pane--make-buffer-eshell-mode (buffer)
   (with-current-buffer buffer
