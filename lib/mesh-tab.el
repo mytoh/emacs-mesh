@@ -184,7 +184,7 @@
              (mesh:tab--subst-session-list new-current-session current-session)
              (set-window-configuration (mesh:get-conf next-tab))))))))
 
-(defmethod mesh:tab--kill-panes ((tab mesh:tab))
+(cl-defmethod mesh:tab--kill-panes ((tab mesh:tab))
   (seq-each
    #'kill-buffer
    (seq-map
