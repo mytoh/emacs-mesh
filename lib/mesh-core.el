@@ -74,9 +74,9 @@
               (cl-position pane panes)))
     (cond ((eq (length panes) 1)
            nil)
-          ((eq (- (length panes) 1) current-position)
+          ((eq (cl-decf (length panes)) current-position)
            (car panes))
-          ((< current-position (- (length panes) 1))
+          ((< current-position (cl-decf (length panes)))
            (cl-nth-value (cl-incf current-position) panes))
           (t nil))))
 
@@ -126,14 +126,14 @@
       ((guard (eq 0 current-tab-pos))
        (car (last tabs)))
       (_
-       (seq-elt tabs (- current-tab-pos 1))))))
+       (seq-elt tabs (cl-decf current-tab-pos))))))
 
 
 (cl-defmethod mesh:find-next ((current-session mesh:session) sessions)
   (cl-letf* ((current-session-pos (cl-position
                                    current-session
                                    sessions)))
-    (pcase (- (length sessions) 1)
+    (pcase (cl-decf (length sessions))
       (`0 nil)
       ((pred (eq current-session-pos))
        (car sessions))
@@ -150,7 +150,7 @@
       (`1 nil)
       ((guard (eq 0 current-session-pos))
        (car (last sessions)))
-      (_ (seq-elt sessions (- current-session-pos 1))))))
+      (_ (seq-elt sessions (cl-decf current-session-pos))))))
 
 (cl-defun mesh:find-missing-index (fn lst)
   (cl-letf ((indices (seq-sort #'< (seq-map fn lst))))
