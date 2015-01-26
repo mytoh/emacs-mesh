@@ -77,7 +77,7 @@
           ((eq (- (length panes) 1) current-position)
            (car panes))
           ((< current-position (- (length panes) 1))
-           (cl-nth-value (+ current-position 1) panes))
+           (cl-nth-value (cl-incf current-position) panes))
           (t nil))))
 
 (cl-defmethod mesh:find-next ((current-tab mesh:tab) tabs)
@@ -102,7 +102,7 @@
   (if (or (null lst)
           (eq index max-index))
       nil
-    (cl-letf* ((target-index (+ 1 index))
+    (cl-letf* ((target-index (cl-incf index))
                (next (cl-find target-index lst)))
       (if next
           next
@@ -114,7 +114,7 @@
     (cl-letf ((next (mesh:find-next-index-rec index max-index lst)))
       (if next
           next
-        (mesh:find-next-index-rec (+ 1 index) max-index lst)))))
+        (mesh:find-next-index-rec (cl-incf index) max-index lst)))))
 
 
 (cl-defmethod mesh:find-prev ((current-tab mesh:tab) tabs)
@@ -138,7 +138,7 @@
       ((pred (eq current-session-pos))
        (car sessions))
       ((pred (< current-session-pos))
-       (seq-elt sessions (+ current-session-pos 1)))
+       (seq-elt sessions (cl-incf current-session-pos)))
       (_ nil))))
 
 
@@ -159,10 +159,10 @@
            (cond ((and lst
                        (<= 2 (length lst)))
                   (append
-                   (if (eq (+ 1 (car lst))
+                   (if (eq (cl-incf (car lst))
                            (cadr lst))
                        '()
-                     (list (+ 1 (car lst))))
+                     (list (cl-incf (car lst))))
                    (rec (cdr lst) res)))
                  (t res))))
       (rec indices '()))))
