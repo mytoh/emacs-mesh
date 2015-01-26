@@ -81,15 +81,40 @@
           (t nil))))
 
 (cl-defmethod mesh:find-next ((current-tab mesh:tab) tabs)
-  (cl-letf* ((current-tab-pos (cl-position
-                               current-tab
-                               tabs)))
-    (pcase (- (length tabs) 1)
-      (`0 nil)
-      ((pred (eq  current-tab-pos))
-       (car tabs))
-      (_
-       (seq-elt tabs (+ current-tab-pos 1))))))
+  (cl-letf* ((indices (seq-map #'mesh:get-index tabs))
+             (max-index (apply #'max indices))
+             (min-index (apply #'min indices))
+             (current-index (mesh:get-index current-tab))
+             (next-index (mesh:find-next-index current-index
+                                               max-index
+                                               indices)))
+    (if next-index
+        (cl-find-if
+         (lambda (tab)
+           (eq next-index (mesh:get-index tab)))
+         tabs)
+      (cl-find-if
+       (lambda (tab)
+         (eq min-index (mesh:get-index tab)))
+       tabs))))
+
+(cl-defun mesh:find-next-index-rec (index max-index lst)
+  (if (or (null lst)
+          (eq index max-index))
+      nil
+    (cl-letf* ((target-index (+ 1 index))
+               (next (cl-find target-index lst)))
+      (if next
+          next
+        (mesh:find-next-index-rec index max-index (cdr lst))))))
+
+(cl-defun mesh:find-next-index (index max-index lst)
+  (if (eq index max-index)
+      nil
+    (cl-letf ((next (mesh:find-next-index-rec index max-index lst)))
+      (if next
+          next
+        (mesh:find-next-index-rec (+ 1 index) max-index lst)))))
 
 
 (cl-defmethod mesh:find-prev ((current-tab mesh:tab) tabs)
@@ -128,7 +153,7 @@
       (_ (seq-elt sessions (- current-session-pos 1))))))
 
 (cl-defun mesh:find-missing-index (fn lst)
-  (cl-letf ((indices (seq-map fn lst)))
+  (cl-letf ((indices (seq-sort #'< (seq-map fn lst))))
     (cl-labels
         ((rec (lst res)
            (cond ((and lst
@@ -141,6 +166,11 @@
                    (rec (cdr lst) res)))
                  (t res))))
       (rec indices '()))))
+
+(cl-defmethod mesh:find-last ((lst list))
+  (cl-letf* ((indices (seq-map #'mesh:get-index lst))
+             (max-index (apply #'max indices)))
+    max-index))
 
 (provide 'mesh-core)
 
