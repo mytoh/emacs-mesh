@@ -26,15 +26,20 @@
   (cl-letf* ((current-session (mesh:current-session))
              (current-session-name (mesh:get-name current-session)))
     (cl-letf* ((new-tab-name mesh:default-tab-name)
-               (last-tab (car (last (mesh:get-tabs current-session))))
+               (last-tab-index
+                (mesh:find-last (mesh:get-tabs current-session)))
+               (last-tab
+                (cl-find-if
+                 (lambda (tab)
+                   (eq last-tab-index (mesh:get-index tab)))
+                 (mesh:get-tabs current-session)))
                (missing-tab-indices
                 (mesh:find-missing-index #'mesh:get-index
                                          (mesh:get-tabs current-session)))
                (new-tab-index
                 (if missing-tab-indices
                     (car missing-tab-indices)
-                  (if last-tab
-                      (+ 1 (mesh:get-index last-tab)) 0))))
+                  (+ 1 last-tab-index))))
       (cl-letf* ((new-tab (mesh:tab--new new-tab-name current-session-name
                                          new-tab-index))
                  (current-tab (mesh:get-current-tab current-session))
