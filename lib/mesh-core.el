@@ -74,9 +74,9 @@
               (cl-position pane panes)))
     (cond ((eq (length panes) 1)
            nil)
-          ((eq (cl-decf (length panes)) current-position)
+          ((eq (- (length panes) 1) current-position)
            (car panes))
-          ((< current-position (cl-decf (length panes)))
+          ((< current-position (- (length panes) 1  ))
            (cl-nth-value (cl-incf current-position) panes))
           (t nil))))
 
@@ -133,7 +133,7 @@
   (cl-letf* ((current-session-pos (cl-position
                                    current-session
                                    sessions)))
-    (pcase (cl-decf (length sessions))
+    (pcase (- (length sessions) 1)
       (`0 nil)
       ((pred (eq current-session-pos))
        (car sessions))
