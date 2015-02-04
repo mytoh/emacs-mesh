@@ -56,10 +56,6 @@
          :accessor mesh:get-conf)
    (current-pane :initarg :current-pane
                  :accessor mesh:get-current-pane)
-   (index :initarg :index
-          :type number
-          :initform 0
-          :accessor mesh:get-index)
    (panes :initarg :panes
           :type list
           :initform nil
