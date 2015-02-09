@@ -113,6 +113,7 @@
          (jump-to-register mesh:window-configuration-name)
          (mesh:unset-inside-session)
          (mesh:unset-current-session)
+         (mesh:unset-session-list)
          (seq-each
           (lambda (tab)
             (mesh:tab--kill-panes tab))
