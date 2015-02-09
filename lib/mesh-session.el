@@ -109,11 +109,10 @@
       (`1
        (cl-letf ((current-tab (mesh:get-current-tab current-session))
                  (current-tabs (mesh:get-tabs current-session)))
-         (setq mesh:*session-list* nil)
+         (mesh:unset-session-list)
          (jump-to-register mesh:window-configuration-name)
          (mesh:unset-inside-session)
          (mesh:unset-current-session)
-         (mesh:unset-session-list)
          (seq-each
           (lambda (tab)
             (mesh:tab--kill-panes tab))
