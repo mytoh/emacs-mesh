@@ -17,9 +17,10 @@
              (current-tab (mesh:get-current-tab current-session))
              (current-tab-name (mesh:get-name current-tab))
              (current-tab-index (mesh:get-index current-tab))
+             (current-buffer-name (buffer-name (current-buffer)))
              (current-pane-index (mesh:get-index
                                   (cl-find-if
-                                   (lambda (pane) (cl-equalp (buffer-name (current-buffer))
+                                   (lambda (pane) (cl-equalp current-buffer-name
                                                         (buffer-name (mesh:get-buffer pane))))
                                    (mesh:get-panes current-tab))))
              (last-command-name eshell-last-command-name)
