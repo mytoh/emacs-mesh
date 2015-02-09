@@ -109,7 +109,7 @@
              (pane (mesh:get-current-pane current-tab))
              (pane-last-index
               (apply #'max (seq-map
-                            (lambda (p) (mesh:get-index p))
+                            #'mesh:get-index
                             (mesh:get-panes current-tab))))
              (pane-missing-indices
               (mesh:find-missing-index #'mesh:get-index (mesh:get-panes current-tab))))
