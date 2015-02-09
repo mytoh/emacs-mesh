@@ -39,6 +39,9 @@
 (cl-defmethod mesh:set-current-session ((session mesh:session))
   (setq mesh:*current-session* session))
 
+(cl-defun mesh:unset-current-session ()
+  (setq mesh:*current-session* nil))
+
 (cl-defmacro mesh:defcommand (name &rest body)
   (declare (debug t)
            (indent 1))
@@ -76,7 +79,7 @@
            nil)
           ((eq (- (length panes) 1) current-position)
            (car panes))
-          ((< current-position (- (length panes) 1  ))
+          ((< current-position (- (length panes) 1))
            (cl-nth-value (cl-incf current-position) panes))
           (t nil))))
 
