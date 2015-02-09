@@ -18,6 +18,9 @@
 (cl-defun mesh:session-list ()
   mesh:*session-list*)
 
+(cl-defun mesh:unset-session-list ()
+  (setq mesh:*session-list* nil))
+
 (defvar mesh:*inside-session* nil)
 
 (cl-defun mesh:inside-session-p ()
