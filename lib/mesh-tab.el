@@ -182,7 +182,7 @@
                  (current-tabs tabs))
         current-session
       (pcase (seq-length current-tabs)
-        (`1 (mesh:session--command-kill))
+        (1 (mesh:session--command-kill))
         (_ (cl-letf* ((next-tab (mesh:find-next current-tab current-tabs))
                       (new-current-session current-session))
              (mesh:tab--kill-panes current-tab)

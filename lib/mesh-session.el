@@ -106,7 +106,7 @@
   (cl-letf* ((current-session (mesh:current-session))
              (current-session-list (mesh:session-list)))
     (pcase (seq-length current-session-list)
-      (`1
+      (1
        (cl-letf ((current-tab (mesh:get-current-tab current-session))
                  (current-tabs (mesh:get-tabs current-session)))
          (mesh:unset-session-list)
