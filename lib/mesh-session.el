@@ -114,8 +114,7 @@
          (mesh:unset-inside-session)
          (mesh:unset-current-session)
          (seq-each
-          (lambda (tab)
-            (mesh:tab--kill-panes tab))
+          #'mesh:tab--kill-panes
           current-tabs)))
       (_
        (cl-letf ((current-tab (mesh:get-current-tab current-session))
