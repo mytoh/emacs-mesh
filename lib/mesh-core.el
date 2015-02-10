@@ -128,7 +128,7 @@
                                tabs)))
     (pcase (length tabs)
       (1 nil)
-      ((guard (eq 0 current-tab-pos))
+      ((guard (zerop current-tab-pos))
        (car (last tabs)))
       (_
        (seq-elt tabs (cl-decf current-tab-pos))))))
@@ -153,7 +153,7 @@
                                    sessions)))
     (pcase (length sessions)
       (1 nil)
-      ((guard (eq 0 current-session-pos))
+      ((guard (zerop current-session-pos))
        (car (last sessions)))
       (_ (seq-elt sessions (cl-decf current-session-pos))))))
 
