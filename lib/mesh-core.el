@@ -24,9 +24,8 @@
 (defvar mesh:*inside-session* nil)
 
 (cl-defun mesh:inside-session-p ()
-  (if (and mesh:*inside-session*
-           (eq major-mode 'eshell-mode))
-      t nil))
+  (and mesh:*inside-session*
+       (eq major-mode 'eshell-mode)))
 
 (cl-defun mesh:set-inside-session ()
   (setq mesh:*inside-session* t))
