@@ -139,7 +139,7 @@
   (cl-letf* ((current-session-pos (cl-position
                                    current-session
                                    sessions)))
-    (pcase (- (length sessions) 1)
+    (pcase (1- (length sessions))
       (0 nil)
       ((pred (eq current-session-pos))
        (car sessions))
