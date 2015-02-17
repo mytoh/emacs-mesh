@@ -82,7 +82,7 @@
       ((pred (eq current-position))
        (car panes))
       ((pred (< current-position))
-       (cl-nth-value (cl-incf current-position) panes))
+       (cl-nth-value (1+ current-position) panes))
       (_ nil))))
 
 (cl-defmethod mesh:find-next ((current-tab mesh:tab) tabs)
@@ -107,7 +107,7 @@
   (if (or (null lst)
           (eq index max-index))
       nil
-    (cl-letf* ((target-index (cl-incf index))
+    (cl-letf* ((target-index (1+ index))
                (next (cl-find target-index lst)))
       (if next
           next
@@ -119,7 +119,7 @@
     (cl-letf ((next (mesh:find-next-index-rec index max-index lst)))
       (if next
           next
-        (mesh:find-next-index-rec (cl-incf index) max-index lst)))))
+        (mesh:find-next-index-rec (1+ index) max-index lst)))))
 
 
 (cl-defmethod mesh:find-prev ((current-tab mesh:tab) tabs)
@@ -131,7 +131,7 @@
       ((guard (zerop current-tab-pos))
        (car (last tabs)))
       (_
-       (seq-elt tabs (cl-decf current-tab-pos))))))
+       (seq-elt tabs (1- current-tab-pos))))))
 
 
 (cl-defmethod mesh:find-next ((current-session mesh:session) sessions)
@@ -143,7 +143,7 @@
       ((pred (eq current-session-pos))
        (car sessions))
       ((pred (< current-session-pos))
-       (seq-elt sessions (cl-incf current-session-pos)))
+       (seq-elt sessions (1+ current-session-pos)))
       (_ nil))))
 
 
@@ -155,7 +155,7 @@
       (1 nil)
       ((guard (zerop current-session-pos))
        (car (last sessions)))
-      (_ (seq-elt sessions (cl-decf current-session-pos))))))
+      (_ (seq-elt sessions (1- current-session-pos))))))
 
 (cl-defun mesh:find-missing-index (fn lst)
   (cl-letf ((indices (seq-sort #'< (seq-map fn lst))))
@@ -164,10 +164,10 @@
            (cond ((and lst
                        (<= 2 (length lst)))
                   (append
-                   (if (eq (cl-incf (car lst))
+                   (if (eq (1+ (car lst))
                            (cadr lst))
                        '()
-                     (list (cl-incf (car lst))))
+                     (list (1+ (car lst))))
                    (rec (cdr lst) res)))
                  (t res))))
       (rec indices '()))))
