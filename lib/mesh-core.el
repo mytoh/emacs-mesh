@@ -56,14 +56,16 @@
   (declare (debug t)
            (indent 1))
   (cl-labels ((rec (obj lst res)
-                (if lst
-                    (rec
-                     obj
-                     (cddr lst)
-                     (cons
-                      `(setf (slot-value ,obj ,(car lst)) ,(cadr lst))
-                      res))
-                  (reverse res))))
+                (pcase lst
+                  (`()
+                    (reverse res))
+                  (_
+                   (rec
+                    obj
+                    (cddr lst)
+                    (cons
+                     `(setf (slot-value ,obj ,(car lst)) ,(cadr lst))
+                     res))))))
     `(cl-locally
          ,@(rec object body '()))))
 
