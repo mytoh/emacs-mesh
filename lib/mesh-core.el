@@ -161,15 +161,15 @@
   (cl-letf ((indices (seq-sort #'< (seq-map fn lst))))
     (cl-labels
         ((rec (lst res)
-           (cond ((and lst
-                       (<= 2 (length lst)))
-                  (append
-                   (if (eq (1+ (car lst))
-                           (cadr lst))
-                       '()
-                     (list (1+ (car lst))))
-                   (rec (cdr lst) res)))
-                 (t res))))
+           (pcase lst
+             (`(,_ ,_ . ,_)
+               (append
+                (if (eq (1+ (car lst))
+                        (cadr lst))
+                    '()
+                  (list (1+ (car lst))))
+                (rec (cdr lst) res)))
+             (_ res))))
       (rec indices '()))))
 
 (cl-defmethod mesh:find-last ((lst list))
