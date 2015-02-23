@@ -70,10 +70,12 @@
          ,@(rec object body '()))))
 
 (cl-defgeneric mesh:find-next ()
-  "find next thing")
+  (:documentation
+   "find next thing"))
 
 (cl-defgeneric mesh:find-prev ()
-  "find prev thing")
+  (:documentation
+   "find prev thing"))
 
 
 (cl-defmethod mesh:find-next ((pane mesh:pane) panes)
