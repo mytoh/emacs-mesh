@@ -64,7 +64,7 @@
                     obj
                     (cddr lst)
                     (cons
-                     `(setf (slot-value ,obj ,(car lst)) ,(cadr lst))
+                     `(setf (slot-value ,obj ,(cl-first lst)) ,(cl-second lst))
                      res))))))
     `(cl-locally
          ,@(rec object body '()))))
@@ -84,7 +84,7 @@
     (pcase (1- (length panes))
       (0 nil)
       ((pred (eq current-position))
-       (car panes))
+       (cl-first panes))
       ((pred (< current-position))
        (cl-nth-value (1+ current-position) panes))
       (_ nil))))
@@ -115,7 +115,7 @@
                (next (cl-find target-index lst)))
       (if next
           next
-        (mesh:find-next-index-rec index max-index (cdr lst))))))
+        (mesh:find-next-index-rec index max-index (cl-rest lst))))))
 
 (cl-defun mesh:find-next-index (index max-index lst)
   (if (eq index max-index)
@@ -133,7 +133,7 @@
     (pcase (length tabs)
       (1 nil)
       ((guard (zerop current-tab-pos))
-       (car (last tabs)))
+       (cl-first (last tabs)))
       (_
        (seq-elt tabs (1- current-tab-pos))))))
 
@@ -145,7 +145,7 @@
     (pcase (1- (length sessions))
       (0 nil)
       ((pred (eq current-session-pos))
-       (car sessions))
+       (cl-first sessions))
       ((pred (< current-session-pos))
        (seq-elt sessions (1+ current-session-pos)))
       (_ nil))))
@@ -158,7 +158,7 @@
     (pcase (length sessions)
       (1 nil)
       ((guard (zerop current-session-pos))
-       (car (last sessions)))
+       (cl-first (last sessions)))
       (_ (seq-elt sessions (1- current-session-pos))))))
 
 (cl-defun mesh:find-missing-index (fn lst)
@@ -168,11 +168,11 @@
            (pcase lst
              (`(,_ ,_ . ,_)
                (append
-                (if (eq (1+ (car lst))
-                        (cadr lst))
+                (if (eq (1+ (cl-first lst))
+                        (cl-second lst))
                     '()
-                  (list (1+ (car lst))))
-                (rec (cdr lst) res)))
+                  (list (1+ (cl-first lst))))
+                (rec (cl-rest lst) res)))
              (_ res))))
       (rec indices '()))))
 

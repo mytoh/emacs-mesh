@@ -45,7 +45,7 @@
     (cl-letf* ((new-session (mesh:session--new
                              mesh:default-session-name
                              (mesh:session-list)))
-               (tab (car (mesh:get-tabs new-session)))
+               (tab (cl-first (mesh:get-tabs new-session)))
                (conf (mesh:get-conf tab)))
       (cond
         (conf
@@ -54,7 +54,7 @@
          (switch-to-buffer
           (thread-first tab
             mesh:get-panes
-            car
+            cl-first
             mesh:get-buffer))
          (delete-other-windows)))
       (mesh:set-current-session new-session)

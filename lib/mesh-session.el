@@ -13,7 +13,7 @@
 
 (cl-defun mesh:session--new (session-name sessions)
   (if-let ((found (cl-find-if (lambda (s) (cl-equalp (mesh:get-name s)
-                                                     session-name))
+                                                session-name))
                               sessions)))
       found
     (cl-letf ((new-tab (mesh:tab--new
@@ -28,7 +28,7 @@
   (cl-letf ((new-session-name
              (if (cl-find-if
                   (lambda (session) (cl-equalp new-session-name
-                                               (mesh:get-name session)))
+                                          (mesh:get-name session)))
                   (mesh:session-list))
                  (concat new-session-name "*")
                new-session-name)))
@@ -46,12 +46,12 @@
     (cl-letf* ((new-session (mesh:session--new
                              new-session-name
                              (mesh:session-list)))
-               (tab (car (mesh:get-tabs new-session)))
+               (tab (cl-first (mesh:get-tabs new-session)))
                (conf (mesh:get-conf tab)))
       (switch-to-buffer
        (thread-first tab
          mesh:get-panes
-         car
+         cl-first
          mesh:get-buffer))
       (delete-other-windows)
       (mesh:set-current-session new-session)

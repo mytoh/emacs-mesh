@@ -38,7 +38,7 @@
                                          (mesh:get-tabs current-session)))
                (new-tab-index
                 (if missing-tab-indices
-                    (car missing-tab-indices)
+                    (cl-first missing-tab-indices)
                   (1+  last-tab-index))))
       (cl-letf* ((new-tab (mesh:tab--new new-tab-name current-session-name
                                          new-tab-index))
@@ -54,7 +54,7 @@
         (cl-letf ((new-pane-buffer
                    (thread-first new-tab
                      mesh:get-panes
-                     car
+                     cl-first
                      mesh:get-buffer)))
           (delete-other-windows)
           (switch-to-buffer new-pane-buffer))
@@ -85,7 +85,7 @@
                           current-tab
                           (mesh:get-name current-session)
                           (if pane-missing-indices
-                              (car pane-missing-indices)
+                              (cl-first pane-missing-indices)
                             (1+  pane-last-index)))))
       (cl-letf ((new-window (split-window nil nil 'below)))
         (set-window-buffer new-window (mesh:get-buffer new-pane))
@@ -119,7 +119,7 @@
                           current-tab
                           (mesh:get-name current-session)
                           (if pane-missing-indices
-                              (car pane-missing-indices)
+                              (cl-first pane-missing-indices)
                             (1+  pane-last-index)))))
       (cl-letf ((new-window (split-window nil nil 'right)))
         (set-window-buffer new-window (mesh:get-buffer new-pane))
