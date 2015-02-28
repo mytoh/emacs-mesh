@@ -5,7 +5,7 @@
 (require 'cl-lib)
 (require 'eieio)
 
-(defclass mesh:session ()
+(defclass mesh:<session> ()
   ((name :initarg :name
          :type string
          :initform ""
@@ -20,7 +20,7 @@
   "session class")
 
 
-(defclass mesh:pane ()
+(defclass mesh:<pane> ()
   ((session :initarg :session
             :type string
             :initform ""
@@ -39,7 +39,7 @@
   "pane class")
 
 
-(defclass mesh:tab ()
+(defclass mesh:<tab> ()
   ((name :initarg :name
          :type string
          :initform ""

@@ -18,7 +18,7 @@
     (mesh:pane--make-pane
      session-name tab-name 0 buffer)))
 
-(cl-defmethod mesh:pane--create ((tab mesh:tab) session-name)
+(cl-defmethod mesh:pane--create ((tab mesh:<tab>) session-name)
   (cl-letf* ((pane-index 0)
              (tab-name (mesh:get-name tab))
              (tab-index (mesh:get-index tab))
@@ -31,7 +31,7 @@
     (mesh:pane--make-pane
      session-name tab-name pane-index buffer)))
 
-(cl-defmethod mesh:pane--create ((tab mesh:tab) session-name pane-index)
+(cl-defmethod mesh:pane--create ((tab mesh:<tab>) session-name pane-index)
   (cl-letf* ((tab-name (mesh:get-name tab))
              (tab-index (mesh:get-index tab))
              (buffer (mesh:pane--get-buffer-create
@@ -44,7 +44,7 @@
 
 (cl-defun mesh:pane--make-pane
     (session-name tab-name pane-index buffer)
-  (make-instance 'mesh:pane
+  (make-instance 'mesh:<pane>
                  :session session-name
                  :tab tab-name
                  :index pane-index

@@ -19,7 +19,7 @@
     (cl-letf ((new-tab (mesh:tab--new
                         mesh:default-tab-name
                         session-name)))
-      (make-instance 'mesh:session
+      (make-instance 'mesh:<session>
                      :name session-name
                      :current-tab new-tab
                      :tabs (list new-tab)))))

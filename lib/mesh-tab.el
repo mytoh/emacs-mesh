@@ -14,7 +14,7 @@
   (cl-letf* ((new-pane (mesh:pane--new session-name
                                        tab-name
                                        index)))
-    (make-instance 'mesh:tab
+    (make-instance 'mesh:<tab>
                    :name tab-name
                    :conf nil
                    :index index
@@ -193,7 +193,7 @@
              (mesh:tab--subst-session-list new-current-session current-session)
              (set-window-configuration (mesh:get-conf next-tab))))))))
 
-(cl-defmethod mesh:tab--kill-panes ((tab mesh:tab))
+(cl-defmethod mesh:tab--kill-panes ((tab mesh:<tab>))
   (seq-each
    #'kill-buffer
    (seq-map
