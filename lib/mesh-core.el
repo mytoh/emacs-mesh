@@ -11,7 +11,8 @@
 (defcustom mesh:default-session-name "main"
   "default session name")
 
-(defconst mesh:window-configuration-name :mesh-winconf)
+(defconst mesh:*window-configuration-name*
+  :mesh-winconf)
 
 (defvar mesh:*session-list* nil)
 
@@ -21,17 +22,17 @@
 (cl-defun mesh:unset-session-list ()
   (setq mesh:*session-list* nil))
 
-(defvar mesh:*inside-session* nil)
+(defvar mesh:*inside-session-p* nil)
 
 (cl-defun mesh:inside-session-p ()
-  (and mesh:*inside-session*
+  (and mesh:*inside-session-p*
        (eq major-mode 'eshell-mode)))
 
 (cl-defun mesh:set-inside-session ()
-  (setq mesh:*inside-session* t))
+  (setq mesh:*inside-session-p* t))
 
 (cl-defun mesh:unset-inside-session ()
-  (setq mesh:*inside-session* nil))
+  (setq mesh:*inside-session-p* nil))
 
 (defvar mesh:*current-session* nil)
 

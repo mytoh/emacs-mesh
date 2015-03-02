@@ -29,11 +29,11 @@
       (setq mesh:*session-list*
             (cl-subst new-session old-session
                       (mesh:session-list)))))
-  (jump-to-register mesh:window-configuration-name)
+  (jump-to-register mesh:*window-configuration-name*)
   (mesh:unset-inside-session))
 
 (cl-defun mesh:command--switch-outside ()
-  (window-configuration-to-register mesh:window-configuration-name)
+  (window-configuration-to-register mesh:*window-configuration-name*)
   (if (mesh:session-list)
       (cl-letf* ((session (mesh:current-session))
                  (conf (thread-first session
