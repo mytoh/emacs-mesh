@@ -30,7 +30,7 @@
                   (lambda (session) (cl-equalp new-session-name
                                           (mesh:get-name session)))
                   (mesh:session-list))
-                 (concat new-session-name "*")
+                 (seq-concatenate 'string new-session-name "*")
                new-session-name)))
     (cl-letf* ((current-session (mesh:current-session))
                (current-session-tabs (mesh:get-tabs current-session))

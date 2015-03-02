@@ -27,14 +27,14 @@
              (directory-name (abbreviate-file-name (eshell/pwd))))
     (string-join
      (list
-      (concat
-       (propertize
-        current-tab-name
-        'face 'font-lock-doc-face)
-       "."
-       (propertize
-        (number-to-string current-tab-index)
-        'face 'font-lock-doc-face))
+      (seq-concatenate 'string
+                       (propertize
+                        current-tab-name
+                        'face 'font-lock-doc-face)
+                       "."
+                       (propertize
+                        (number-to-string current-tab-index)
+                        'face 'font-lock-doc-face))
       (propertize
        (number-to-string current-pane-index)
        'face 'font-lock-keyword-face)
