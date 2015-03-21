@@ -87,7 +87,7 @@
       ((pred (eq current-position))
        (cl-first panes))
       ((pred (< current-position))
-       (cl-nth-value (1+ current-position) panes))
+       (seq-elt panes (1+ current-position)))
       (_ nil))))
 
 (cl-defmethod mesh:find-next ((current-tab mesh:<tab>) tabs)
