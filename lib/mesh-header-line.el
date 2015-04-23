@@ -22,7 +22,8 @@
         (if (cl-equalp session current-session)
             (propertize
              (mesh:get-name session)
-             'face 'font-lock-type-face)
+             'face `( :foreground ,(face-foreground 'font-lock-type-face)
+                                  :background ,(face-background 'default)))
           (propertize
            (mesh:get-name session)
            'face 'font-lock-comment-face)))
