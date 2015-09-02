@@ -11,7 +11,7 @@
          :initform ""
          :accessor mesh:get-name)
    (current-tab :initarg :current-tab
-                :type mesh:tab
+                :type mesh:<tab>
                 :accessor mesh:get-current-tab)
    (tabs :initarg :tabs
          :type list
