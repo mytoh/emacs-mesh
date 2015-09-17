@@ -20,23 +20,29 @@
   "session class")
 
 
-(defclass mesh:<pane> ()
-  ((session :initarg :session
-            :type string
-            :initform ""
-            :accessor mesh:get-session)
-   (tab :initarg :tab
-        :type string
-        :initform ""
-        :accessor mesh:get-tab)
-   (index :initarg :index
-          :type number
-          :initform 0
-          :accessor mesh:get-index)
-   (buffer :initarg :buffer
-           :type buffer
-           :accessor mesh:get-buffer))
-  "pane class")
+;; (defclass mesh:<pane> ()
+;;   ((session :initarg :session
+;;             :type string
+;;             :initform ""
+;;             :accessor mesh:get-session)
+;;    (tab :initarg :tab
+;;         :type string
+;;         :initform ""
+;;         :accessor mesh:get-tab)
+;;    (index :initarg :index
+;;           :type number
+;;           :initform 0
+;;           :accessor mesh:get-index)
+;;    (buffer :initarg :buffer
+;;            :type buffer
+;;            :accessor mesh:get-buffer))
+;;   "pane class")
+
+(defvar mesh:<pane>-template
+  '(:session ""
+    :tab ""
+    :index 0
+    :buffer nil))
 
 
 (defclass mesh:<tab> ()

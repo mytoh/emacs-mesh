@@ -5,6 +5,7 @@
 (require 'cl-lib)
 (require 'eieio)
 (require 'seq)
+(require 'glof)
 
 (require 'mesh-core "lib/mesh-core")
 (require 'mesh-class "lib/mesh-class")
@@ -52,7 +53,7 @@
        (thread-first tab
          mesh:get-panes
          cl-first
-         mesh:get-buffer))
+         (glof:get :buffer)))
       (delete-other-windows)
       (mesh:set-current-session new-session)
       (setq mesh:*session-list*

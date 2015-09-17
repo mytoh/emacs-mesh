@@ -3,6 +3,7 @@
 ;;; Code:
 
 (require 'seq)
+(require 'glof)
 (require 'mesh-class "lib/mesh-class")
 
 (defcustom mesh:default-tab-name "eshell"
@@ -82,21 +83,21 @@
     (`[:session ,session] (mesh:find-prev-session session lst))))
 
 (cl-defun mesh:find-next-pane (current-pane panes)
-  (cl-letf* ((indices (seq-map #'mesh:get-index panes))
+  (cl-letf* ((indices (seq-map (lambda (p) (glof:get p :index)) panes))
              (max-index (apply #'max indices))
              (mix-index (apply #'min indices))
-             (current-index (mesh:get-index current-pane))
+             (current-index (glof:get current-pane :index))
              (next-index (mesh:find-next-index current-index
                                                max-index
                                                indices)))
     (if next-index
         (seq-find
          (lambda (pane)
-           (eq next-index (mesh:get-index pane)))
+           (eq next-index (glof:get pane :index)))
          panes)
       (seq-find
        (lambda (pane)
-         (eq mix-index (mesh:get-index pane)))
+         (eq mix-index (glof:get pane :index)))
        panes))))
 
 (cl-defun mesh:find-next-tab (current-tab tabs)
@@ -176,13 +177,13 @@
     (cl-labels
         ((rec (lst res)
            (pcase lst
-             (`(,head ,tail)
+             (`(,head ,snd . ,_)
                (append
                 (if (eq (1+ head)
-                        (car tail))
+                        snd)
                     '()
                   (list (1+ head)))
-                (rec tail res)))
+                (rec (cl-rest lst) res)))
              (_ res))))
       (rec indices '()))))
 

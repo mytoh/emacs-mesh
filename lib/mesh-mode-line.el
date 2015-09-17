@@ -18,11 +18,12 @@
              (current-tab-name (mesh:get-name current-tab))
              (current-tab-index (mesh:get-index current-tab))
              (current-buffer-name (buffer-name (current-buffer)))
-             (current-pane-index (mesh:get-index
-                                  (seq-find
-                                   (lambda (pane) (cl-equalp current-buffer-name
-                                                        (buffer-name (mesh:get-buffer pane))))
-                                   (mesh:get-panes current-tab))))
+             (current-pane-index (thread-first
+                                     (seq-find
+                                      (lambda (pane) (cl-equalp current-buffer-name
+                                                           (buffer-name (glof:get pane :buffer))))
+                                      (mesh:get-panes current-tab))
+                                   (glof:get :index)))
              (last-command-name eshell-last-command-name)
              (directory-name (abbreviate-file-name (eshell/pwd))))
     (string-join

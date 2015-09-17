@@ -4,6 +4,7 @@
 
 (require 'cl-lib)
 (require 'eieio)
+(require 'glof)
 (require 'mesh-class "lib/mesh-class")
 (require 'mesh-core "lib/mesh-core")
 (require 'mesh-mode-line "lib/mesh-mode-line")
@@ -44,11 +45,17 @@
 
 (cl-defun mesh:pane--make-pane
     (session-name tab-name pane-index buffer)
-  (make-instance 'mesh:<pane>
-                 :session session-name
-                 :tab tab-name
-                 :index pane-index
-                 :buffer buffer))
+  (glof:assoc mesh:<pane>-template
+              :session session-name
+              :tab tab-name
+              :index pane-index
+              :buffer buffer)
+  ;; (make-instance 'mesh:<pane>
+  ;;                :session session-name
+  ;;                :tab tab-name
+  ;;                :index pane-index
+  ;;                :buffer buffer)
+  )
 
 (cl-defun mesh:pane--command-next ()
   (cl-letf* ((current-session (mesh:current-session))
@@ -58,7 +65,7 @@
               (mesh:find-next `[:pane ,current-pane]
                               (mesh:get-panes current-tab))))
     (when next-pane
-      (cl-letf ((next-pane-buffer (mesh:get-buffer next-pane)))
+      (cl-letf ((next-pane-buffer (glof:get next-pane :buffer)))
         (switch-to-buffer-other-window next-pane-buffer)
         (cl-letf* ((new-session current-session)
                    (new-tab current-tab))
@@ -105,9 +112,9 @@
   (cl-letf* ((old-session session)
              (old-tab tab)
              (old-pane pane))
-    (with-current-buffer (mesh:get-buffer old-pane)
-      (cl-letf ((window-to-kill (get-buffer-window (mesh:get-buffer old-pane))))
-        (kill-buffer (mesh:get-buffer old-pane))
+    (with-current-buffer (glof:get old-pane :buffer)
+      (cl-letf ((window-to-kill (get-buffer-window (glof:get old-pane :buffer))))
+        (kill-buffer (glof:get old-pane :buffer))
         (delete-window window-to-kill)))
     (cl-letf* ((new-session old-session)
                (new-tab old-tab))

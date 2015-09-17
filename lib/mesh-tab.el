@@ -5,6 +5,7 @@
 (require 'cl-lib)
 (require 'eieio)
 (require 'seq)
+(require 'glof)
 
 (require 'mesh-class "lib/mesh-class")
 (require 'mesh-core "lib/mesh-core")
@@ -55,7 +56,7 @@
                    (thread-first new-tab
                      mesh:get-panes
                      cl-first
-                     mesh:get-buffer)))
+                     (glof:get :buffer))))
           (delete-other-windows)
           (switch-to-buffer new-pane-buffer))
         (setf (mesh:get-conf new-tab) (current-window-configuration))
@@ -75,10 +76,10 @@
              (pane (mesh:get-current-pane current-tab))
              (pane-last-index
               (apply #'max (seq-map
-                            #'mesh:get-index
+                            (lambda (p) (glof:get p :index))
                             (mesh:get-panes current-tab))))
              (pane-missing-indices
-              (mesh:find-missing-index #'mesh:get-index (mesh:get-panes current-tab))))
+              (mesh:find-missing-index (lambda (p) (glof:get p :index)) (mesh:get-panes current-tab))))
     (cl-letf* ((new-session current-session)
                (new-tab current-tab)
                (new-pane (mesh:pane--create
@@ -88,7 +89,7 @@
                               (cl-first pane-missing-indices)
                             (1+  pane-last-index)))))
       (cl-letf ((new-window (split-window nil nil 'below)))
-        (set-window-buffer new-window (mesh:get-buffer new-pane))
+        (set-window-buffer new-window (glof:get new-pane :buffer))
         (select-window new-window))
       (setf (mesh:get-current-pane new-tab) new-pane)
       (setf (mesh:get-panes new-tab)
@@ -109,10 +110,10 @@
              (pane (mesh:get-current-pane current-tab))
              (pane-last-index
               (apply #'max (seq-map
-                            #'mesh:get-index
+                            (lambda (p) (glof:get p :index))
                             (mesh:get-panes current-tab))))
              (pane-missing-indices
-              (mesh:find-missing-index #'mesh:get-index (mesh:get-panes current-tab))))
+              (mesh:find-missing-index (lambda (p) (glof:get p :index)) (mesh:get-panes current-tab))))
     (cl-letf* ((new-session current-session)
                (new-tab current-tab)
                (new-pane (mesh:pane--create
@@ -122,7 +123,7 @@
                               (cl-first pane-missing-indices)
                             (1+  pane-last-index)))))
       (cl-letf ((new-window (split-window nil nil 'right)))
-        (set-window-buffer new-window (mesh:get-buffer new-pane))
+        (set-window-buffer new-window (glof:get new-pane :buffer))
         (select-window new-window))
       (mesh:set-slots new-tab
         'current-pane new-pane
@@ -197,7 +198,7 @@
   (seq-each
    #'kill-buffer
    (seq-map
-    #'mesh:get-buffer
+    (lambda (p) (glof:get p :buffer))
     (mesh:get-panes tab))))
 
 (provide 'mesh-tab)
