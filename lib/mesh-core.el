@@ -81,17 +81,23 @@
     (`[:tab ,tab] (mesh:find-prev-tab tab lst))
     (`[:session ,session] (mesh:find-prev-session session lst))))
 
-
-(cl-defun mesh:find-next-pane (pane panes)
-  (cl-letf* ((current-position
-              (cl-position pane panes)))
-    (pcase (1- (length panes))
-      (0 nil)
-      ((pred (eq current-position))
-       (cl-first panes))
-      ((pred (< current-position))
-       (seq-elt panes (1+ current-position)))
-      (_ nil))))
+(cl-defun mesh:find-next-pane (current-pane panes)
+  (cl-letf* ((indices (seq-map #'mesh:get-index panes))
+             (max-index (apply #'max indices))
+             (mix-index (apply #'min indices))
+             (current-index (mesh:get-index current-pane))
+             (next-index (mesh:find-next-index current-index
+                                               max-index
+                                               indices)))
+    (if next-index
+        (seq-find
+         (lambda (pane)
+           (eq next-index (mesh:get-index pane)))
+         panes)
+      (seq-find
+       (lambda (pane)
+         (eq mix-index (mesh:get-index pane)))
+       panes))))
 
 (cl-defun mesh:find-next-tab (current-tab tabs)
   (cl-letf* ((indices (seq-map #'mesh:get-index tabs))
