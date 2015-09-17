@@ -176,13 +176,13 @@
     (cl-labels
         ((rec (lst res)
            (pcase lst
-             (`(,_ ,_ . ,_)
+             (`(,head ,tail)
                (append
-                (if (eq (1+ (cl-first lst))
-                        (cl-second lst))
+                (if (eq (1+ head)
+                        (car tail))
                     '()
-                  (list (1+ (cl-first lst))))
-                (rec (cl-rest lst) res)))
+                  (list (1+ head)))
+                (rec tail res)))
              (_ res))))
       (rec indices '()))))
 
