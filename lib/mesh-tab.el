@@ -146,7 +146,7 @@
   (cl-letf* ((current-session (mesh:current-session))
              (current-tab (mesh:get-current-tab current-session))
              (current-tabs (mesh:get-tabs current-session))
-             (next-tab (mesh:find-next current-tab current-tabs)))
+             (next-tab (mesh:find-next `[:tab ,current-tab] current-tabs)))
     (when next-tab
       (cl-letf* ((new-current-tab current-tab)
                  (new-current-session current-session))
@@ -163,7 +163,7 @@
   (cl-letf* ((current-session (mesh:current-session))
              (current-tab (mesh:get-current-tab current-session))
              (current-tabs (mesh:get-tabs current-session))
-             (prev-tab (mesh:find-prev current-tab current-tabs)))
+             (prev-tab (mesh:find-prev `[:tab ,current-tab] current-tabs)))
     (when prev-tab
       (cl-letf* ((new-current-tab current-tab)
                  (new-current-session current-session))
@@ -183,7 +183,7 @@
         current-session
       (pcase (seq-length current-tabs)
         (1 (mesh:session--command-kill))
-        (_ (cl-letf* ((next-tab (mesh:find-next current-tab current-tabs))
+        (_ (cl-letf* ((next-tab (mesh:find-next `[:tab ,current-tab] current-tabs))
                       (new-current-session current-session))
              (mesh:tab--kill-panes current-tab)
              (mesh:set-slots new-current-session

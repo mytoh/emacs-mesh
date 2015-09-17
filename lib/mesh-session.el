@@ -13,7 +13,7 @@
 
 (cl-defun mesh:session--new (session-name sessions)
   (if-let ((found (cl-find-if (lambda (s) (cl-equalp (mesh:get-name s)
-                                                session-name))
+                                                     session-name))
                               sessions)))
       found
     (cl-letf ((new-tab (mesh:tab--new
@@ -28,7 +28,7 @@
   (cl-letf ((new-session-name
              (if (cl-find-if
                   (lambda (session) (cl-equalp new-session-name
-                                          (mesh:get-name session)))
+                                               (mesh:get-name session)))
                   (mesh:session-list))
                  (seq-concatenate 'string new-session-name "*")
                new-session-name)))
@@ -61,7 +61,7 @@
 (cl-defun mesh:session--command-next ()
   (cl-letf* ((current-session (mesh:current-session))
              (next-session
-              (mesh:find-next current-session
+              (mesh:find-next `[:session ,current-session ]
                               (mesh:session-list))))
     (when next-session
       (cl-letf* ((current-session-tabs (mesh:get-tabs current-session))
@@ -83,7 +83,7 @@
 (cl-defun mesh:session--command-prev ()
   (cl-letf* ((current-session (mesh:current-session))
              (prev-session
-              (mesh:find-prev current-session
+              (mesh:find-prev `[:session ,current-session ]
                               (mesh:session-list))))
     (when prev-session
       (cl-letf* ((current-session-tabs (mesh:get-tabs current-session))
@@ -119,7 +119,7 @@
       (_
        (cl-letf ((current-tab (mesh:get-current-tab current-session))
                  (current-tabs (mesh:get-tabs current-session))
-                 (next-session (mesh:find-next current-session current-session-list)))
+                 (next-session (mesh:find-next `[:session ,current-session] current-session-list)))
          (setq mesh:*session-list*
                (cl-remove current-session (mesh:session-list)))
          (cl-letf* ((next-session-conf (thread-first next-session

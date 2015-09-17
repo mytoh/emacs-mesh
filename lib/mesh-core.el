@@ -39,7 +39,7 @@
 (cl-defun mesh:current-session ()
   mesh:*current-session*)
 
-(cl-defmethod mesh:set-current-session ((session mesh:<session>))
+(cl-defun mesh:set-current-session (session)
   (setq mesh:*current-session* session))
 
 (cl-defun mesh:unset-current-session ()
@@ -70,16 +70,19 @@
     `(cl-locally
          ,@(rec object body '()))))
 
-(cl-defgeneric mesh:find-next ()
-  (:documentation
-   "find next thing"))
+(cl-defun mesh:find-next (thing lst)
+  (pcase thing
+    (`[:pane ,pane] (mesh:find-next-pane pane lst))
+    (`[:tab ,tab] (mesh:find-next-tab tab lst))
+    (`[:session ,session] (mesh:find-next-session session lst))))
 
-(cl-defgeneric mesh:find-prev ()
-  (:documentation
-   "find prev thing"))
+(cl-defun mesh:find-prev (thing lst)
+  (pcase thing
+    (`[:tab ,tab] (mesh:find-prev-tab tab lst))
+    (`[:session ,session] (mesh:find-prev-session session lst))))
 
 
-(cl-defmethod mesh:find-next ((pane mesh:<pane>) panes)
+(cl-defun mesh:find-next-pane (pane panes)
   (cl-letf* ((current-position
               (cl-position pane panes)))
     (pcase (1- (length panes))
@@ -90,7 +93,7 @@
        (seq-elt panes (1+ current-position)))
       (_ nil))))
 
-(cl-defmethod mesh:find-next ((current-tab mesh:<tab>) tabs)
+(cl-defun mesh:find-next-tab (current-tab tabs)
   (cl-letf* ((indices (seq-map #'mesh:get-index tabs))
              (max-index (apply #'max indices))
              (min-index (apply #'min indices))
@@ -127,7 +130,7 @@
         (mesh:find-next-index-rec (1+ index) max-index lst)))))
 
 
-(cl-defmethod mesh:find-prev ((current-tab mesh:<tab>) tabs)
+(cl-defun mesh:find-prev-tab (current-tab tabs)
   (cl-letf* ((current-tab-pos (cl-position
                                current-tab
                                tabs)))
@@ -139,7 +142,7 @@
        (seq-elt tabs (1- current-tab-pos))))))
 
 
-(cl-defmethod mesh:find-next ((current-session mesh:<session>) sessions)
+(cl-defun mesh:find-next-session (current-session sessions)
   (cl-letf* ((current-session-pos (cl-position
                                    current-session
                                    sessions)))
@@ -152,7 +155,7 @@
       (_ nil))))
 
 
-(cl-defmethod mesh:find-prev ((current-session mesh:<session>) sessions)
+(cl-defun mesh:find-prev-session (current-session sessions)
   (cl-letf* ((current-session-pos (cl-position
                                    current-session
                                    sessions)))
@@ -177,7 +180,7 @@
              (_ res))))
       (rec indices '()))))
 
-(cl-defmethod mesh:find-last ((lst list))
+(cl-defun mesh:find-last (lst)
   (cl-letf* ((indices (seq-map #'mesh:get-index lst))
              (max-index (apply #'max indices)))
     max-index))

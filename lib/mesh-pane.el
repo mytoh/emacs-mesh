@@ -55,7 +55,7 @@
              (current-tab (mesh:get-current-tab current-session))
              (current-pane (mesh:get-current-pane current-tab))
              (next-pane
-              (mesh:find-next current-pane
+              (mesh:find-next `[:pane ,current-pane]
                               (mesh:get-panes current-tab))))
     (when next-pane
       (cl-letf ((next-pane-buffer (mesh:get-buffer next-pane)))
@@ -75,9 +75,10 @@
   (cl-letf* ((old-session (mesh:current-session))
              (old-tab (mesh:get-current-tab old-session))
              (old-pane (mesh:get-current-pane old-tab))
-             (next-pane (mesh:find-next old-pane
+             (next-pane (mesh:find-next `[:pane ,old-pane]
                                         (mesh:get-panes old-tab)))
-             (next-tab (mesh:find-next old-tab (mesh:get-tabs old-session))))
+             (next-tab (mesh:find-next `[:tab ,old-tab]
+                                       (mesh:get-tabs old-session))))
     (cond
       (next-pane
        (mesh:pane--command-next)
@@ -87,7 +88,7 @@
          (with-slots ((current-tab current-tab)
                       (current-tabs tabs))
              current-session
-           (cl-letf* ((next-tab (mesh:find-next current-tab current-tabs))
+           (cl-letf* ((next-tab (mesh:find-next `[:tab ,current-tab] current-tabs))
                       (new-current-session current-session))
              (mesh:tab--kill-panes current-tab)
              (mesh:set-slots new-current-session
