@@ -108,11 +108,11 @@
                                                max-index
                                                indices)))
     (if next-index
-        (cl-find-if
+        (seq-find
          (lambda (tab)
            (eq next-index (mesh:get-index tab)))
          tabs)
-      (cl-find-if
+      (seq-find
        (lambda (tab)
          (eq min-index (mesh:get-index tab)))
        tabs))))

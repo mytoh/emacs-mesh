@@ -29,7 +29,7 @@
                (last-tab-index
                 (mesh:find-last (mesh:get-tabs current-session)))
                (last-tab
-                (cl-find-if
+                (seq-find
                  (lambda (tab)
                    (eq last-tab-index (mesh:get-index tab)))
                  (mesh:get-tabs current-session)))

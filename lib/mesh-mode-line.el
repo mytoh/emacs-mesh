@@ -19,7 +19,7 @@
              (current-tab-index (mesh:get-index current-tab))
              (current-buffer-name (buffer-name (current-buffer)))
              (current-pane-index (mesh:get-index
-                                  (cl-find-if
+                                  (seq-find
                                    (lambda (pane) (cl-equalp current-buffer-name
                                                         (buffer-name (mesh:get-buffer pane))))
                                    (mesh:get-panes current-tab))))
