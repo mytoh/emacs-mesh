@@ -83,7 +83,7 @@
     (`[:session ,session] (mesh:find-prev-session session lst))))
 
 (cl-defun mesh:find-next-pane (current-pane panes)
-  (cl-letf* ((indices (seq-map (lambda (p) (glof:get p :index)) panes))
+  (cl-letf* ((indices (seq-sort #'< (seq-map (lambda (p) (glof:get p :index)) panes)))
              (max-index (apply #'max indices))
              (mix-index (apply #'min indices))
              (current-index (glof:get current-pane :index))
@@ -101,22 +101,36 @@
        panes))))
 
 (cl-defun mesh:find-next-tab (current-tab tabs)
-  (cl-letf* ((indices (seq-map #'mesh:get-index tabs))
-             (max-index (apply #'max indices))
-             (min-index (apply #'min indices))
-             (current-index (mesh:get-index current-tab))
+  (cl-letf* ((indices (seq-sort #'< (seq-map (lambda (tab) (glof:get tab :index)) tabs)))
+             (max-index (seq-max indices))
+             (min-index (seq-min indices))
+             (current-index (glof:get current-tab :index))
              (next-index (mesh:find-next-index current-index
                                                max-index
                                                indices)))
     (if next-index
         (seq-find
          (lambda (tab)
-           (eq next-index (mesh:get-index tab)))
+           (eq next-index (glof:get tab :index)))
          tabs)
       (seq-find
        (lambda (tab)
-         (eq min-index (mesh:get-index tab)))
+         (eq min-index (glof:get tab :index)))
        tabs))))
+
+(cl-defun mesh:find-next-session (current-session sessions)
+  (cl-letf* ((current-session-pos (cl-position-if
+                                   (lambda (s)
+                                     (cl-equalp (mesh:get-name current-session)
+                                                (mesh:get-name s)))
+                                   sessions)))
+    (pcase (1- (length sessions))
+      (0 nil)
+      ((pred (eq current-session-pos))
+       (cl-first sessions))
+      ((pred (< current-session-pos))
+       (seq-elt sessions (1+ current-session-pos)))
+      (_ nil))))
 
 (cl-defun mesh:find-next-index-rec (index max-index lst)
   (if (or (null lst)
@@ -138,28 +152,51 @@
 
 
 (cl-defun mesh:find-prev-tab (current-tab tabs)
-  (cl-letf* ((current-tab-pos (cl-position
-                               current-tab
-                               tabs)))
-    (pcase (length tabs)
-      (1 nil)
-      ((guard (zerop current-tab-pos))
-       (cl-first (last tabs)))
-      (_
-       (seq-elt tabs (1- current-tab-pos))))))
+  (cl-letf* ((indices (seq-sort #'< (seq-map (lambda (p) (glof:get p :index)) tabs)))
+             (min-index (seq-min indices))
+             (max-index (seq-max indices))
+             (current-index (glof:get current-tab :index))
+             (prev-index (mesh:find-prev-index current-index
+                                               min-index indices)))
+    (if prev-index
+        (seq-find
+         (lambda (tab)
+           (eq prev-index (glof:get tab :index)))
+         tabs)
+      (seq-find
+       (lambda (tab)
+         (eq max-index (glof:get tab :index)))
+       tabs))))
+
+(cl-defun mesh:find-prev-index (index min-index lst)
+  (if (eq index min-index)
+      nil
+    (cl-letf ((prev (mesh:find-prev-index-rec index min-index lst)))
+      (if prev prev
+        (mesh:find-prev-index-rec (1- index) min-index lst)))))
+
+(cl-defun mesh:find-prev-index-rec (index min-index lst)
+  (if (or (null lst)
+          (eq index min-index))
+      nil
+    (cl-letf* ((target-index (1- index))
+               (prev (cl-find target-index lst)))
+      (if prev
+          prev
+        (mesh:find-prev-index-rec index min-index (cl-rest lst))))))
 
 
-(cl-defun mesh:find-next-session (current-session sessions)
-  (cl-letf* ((current-session-pos (cl-position
-                                   current-session
-                                   sessions)))
-    (pcase (1- (length sessions))
-      (0 nil)
-      ((pred (eq current-session-pos))
-       (cl-first sessions))
-      ((pred (< current-session-pos))
-       (seq-elt sessions (1+ current-session-pos)))
-      (_ nil))))
+;; (cl-defun mesh:find-next-session (current-session sessions)
+;;   (cl-letf* ((current-session-pos (cl-position
+;;                                    current-session
+;;                                    sessions)))
+;;     (pcase (1- (length sessions))
+;;       (0 nil)
+;;       ((pred (eq current-session-pos))
+;;        (cl-first sessions))
+;;       ((pred (< current-session-pos))
+;;        (seq-elt sessions (1+ current-session-pos)))
+;;       (_ nil))))
 
 
 (cl-defun mesh:find-prev-session (current-session sessions)
@@ -174,21 +211,35 @@
 
 (cl-defun mesh:find-missing-index (fn lst)
   (cl-letf ((indices (seq-sort #'< (seq-map fn lst))))
-    (cl-labels
-        ((rec (lst res)
-           (pcase lst
-             (`(,head ,snd . ,_)
-               (append
-                (if (eq (1+ head)
-                        snd)
-                    '()
-                  (list (1+ head)))
-                (rec (cl-rest lst) res)))
-             (_ res))))
-      (rec indices '()))))
+    (seq-difference (number-sequence 0 (seq-max indices))
+                    indices)))
+
+;; (cl-defun mesh:find-missing-index (fn lst)
+;;   (cl-letf ((indices (seq-sort #'< (seq-map fn lst))))
+;;     (cl-labels
+;;         ((rec (lst res)
+;;            (pcase lst
+;;              (`(,head ,snd . ,_)
+;;                (append
+;;                 (if (eq (1+ head)
+;;                         snd)
+;;                     '()
+;;                   (list (1+ head)))
+;;                 (if (seq-find
+;;                      (lambda (i) (eq i (1- head)))
+;;                      res)
+;;                     '()
+;;                   (list (1- head)))
+;;                 (rec (cl-rest lst) res)))
+;;              (_ res))))
+;;       (rec indices
+;;            (pcase indices
+;;              (`(0 . ,_)
+;;                '())
+;;              (_ '(0)))))))
 
 (cl-defun mesh:find-last (lst)
-  (cl-letf* ((indices (seq-map #'mesh:get-index lst))
+  (cl-letf* ((indices (seq-map (lambda (tab) (glof:get tab :index)) lst))
              (max-index (apply #'max indices)))
     max-index))
 

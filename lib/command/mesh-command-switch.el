@@ -24,12 +24,21 @@
              (old-tab (mesh:get-current-tab old-session)))
     (cl-letf* ((new-session old-session)
                (new-tab old-tab))
-      (setf (mesh:get-conf new-tab) (current-window-configuration))
+      ;; (setf (mesh:get-conf new-tab) (current-window-configuration))
+      ;; (setf (mesh:get-tabs new-session)
+      ;;       (cl-subst new-tab old-tab tabs))
       (setf (mesh:get-tabs new-session)
-            (cl-subst new-tab old-tab tabs))
-      (setq mesh:*session-list*
-            (cl-subst new-session old-session
-                      (mesh:session-list)))))
+            (thread-first new-tab
+              (glof:assoc :conf (current-window-configuration))
+              (cl-substitute-if (lambda (tab) (eq (glof:get tab :index)
+                                             (glof:get old-tab :index)))
+                                tabs)))
+      ;; (setq mesh:*session-list*
+      ;;       (cl-subst new-session old-session
+      ;;                 (mesh:session-list)))
+      (mesh:tab--subst-session-list
+       new-session old-session)
+      ))
   (jump-to-register mesh:*window-configuration-name*)
   (mesh:unset-inside-session))
 
@@ -39,7 +48,7 @@
       (cl-letf* ((session (mesh:current-session))
                  (conf (thread-first session
                          mesh:get-current-tab
-                         mesh:get-conf)))
+                         (glof:get :conf))))
         (set-window-configuration conf)
         (mesh:set-current-session session)
         (mesh:set-inside-session))
@@ -47,20 +56,29 @@
                              mesh:default-session-name
                              (mesh:session-list)))
                (tab (cl-first (mesh:get-tabs new-session)))
-               (conf (mesh:get-conf tab)))
+               (conf (glof:get tab :conf)))
       (cond
         (conf
-         (set-window-configuration conf))
+         (set-window-configuration conf)
+         (mesh:set-current-session new-session)
+         (setq mesh:*session-list* (list new-session))
+         (mesh:set-inside-session))
         (t
          (switch-to-buffer
           (thread-first tab
-            mesh:get-panes
+            (glof:get :panes)
             cl-first
             (glof:get :buffer)))
-         (delete-other-windows)))
-      (mesh:set-current-session new-session)
-      (setq mesh:*session-list* (list new-session))
-      (mesh:set-inside-session))))
+         (delete-other-windows)
+         (setf (mesh:get-tabs new-session)
+               (thread-first tab
+                 (glof:assoc :conf (current-window-configuration))
+                 (cl-substitute-if (lambda (tb) (eq (glof:get tb :index)
+                                               (glof:get tab :index)))
+                                   (mesh:get-tabs new-session))))
+         (mesh:set-current-session new-session)
+         (setq mesh:*session-list* (list new-session))
+         (mesh:set-inside-session))))))
 
 (provide 'mesh-command-switch)
 

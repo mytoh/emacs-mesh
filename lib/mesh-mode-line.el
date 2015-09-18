@@ -4,6 +4,7 @@
 
 (require 'cl-lib)
 (require 'eieio)
+(require 'glof)
 
 (require 'mesh-core "lib/mesh-core")
 
@@ -15,14 +16,14 @@
 (cl-defun mesh:mode-line ()
   (cl-letf* ((current-session (mesh:current-session))
              (current-tab (mesh:get-current-tab current-session))
-             (current-tab-name (mesh:get-name current-tab))
-             (current-tab-index (mesh:get-index current-tab))
+             (current-tab-name (glof:get current-tab :name))
+             (current-tab-index (glof:get current-tab :index))
              (current-buffer-name (buffer-name (current-buffer)))
              (current-pane-index (thread-first
                                      (seq-find
                                       (lambda (pane) (cl-equalp current-buffer-name
                                                            (buffer-name (glof:get pane :buffer))))
-                                      (mesh:get-panes current-tab))
+                                      (glof:get current-tab :panes))
                                    (glof:get :index)))
              (last-command-name eshell-last-command-name)
              (directory-name (abbreviate-file-name (eshell/pwd))))
