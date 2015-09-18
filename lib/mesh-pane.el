@@ -73,6 +73,7 @@
                                 (mesh:get-tabs current-session))))
             (setf (mesh:get-tabs new-session) new-tabs)
             (setf (mesh:get-current-tab new-session) new-tab)
+            (mesh:set-current-session new-session)
             (mesh:tab--subst-session-list
              new-session current-session)))))))
 
