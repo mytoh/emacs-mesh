@@ -239,8 +239,8 @@
 ;;              (_ '(0)))))))
 
 (cl-defun mesh:find-last (lst)
-  (cl-letf* ((indices (seq-map (lambda (tab) (glof:get tab :index)) lst))
-             (max-index (apply #'max indices)))
+  (cl-letf* ((indices (seq-map (lambda (thing) (glof:get thing :index)) lst))
+             (max-index (seq-max indices)))
     max-index))
 
 (provide 'mesh-core)
