@@ -84,8 +84,8 @@
 
 (cl-defun mesh:find-next-pane (current-pane panes)
   (cl-letf* ((indices (seq-sort #'< (seq-map (lambda (p) (glof:get p :index)) panes)))
-             (max-index (apply #'max indices))
-             (mix-index (apply #'min indices))
+             (max-index (seq-max indices))
+             (mix-index (seq-min indices))
              (current-index (glof:get current-pane :index))
              (next-index (mesh:find-next-index current-index
                                                max-index
