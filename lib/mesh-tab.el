@@ -90,7 +90,7 @@
         ;; (setq mesh:*session-list*
         ;;       (cl-subst new-session current-session
         ;;                 mesh:*session-list*))
-        (mesh:tab--subst-session-list
+        (mesh:tab--subst-session
          new-session current-session)
         ))))
 
@@ -143,7 +143,7 @@
         (setf (mesh:get-tabs new-session) new-tabs)
         (setf (mesh:get-current-tab new-session) new-tab)
         (mesh:set-current-session new-session)
-        (mesh:tab--subst-session-list
+        (mesh:tab--subst-session
          new-session current-session)))))
 
 (cl-defun mesh:tab--command-vsplit ()
@@ -192,10 +192,10 @@
                (mesh:get-tabs current-session))))
       
       (mesh:set-current-session new-session)
-      (mesh:tab--subst-session-list
+      (mesh:tab--subst-session
        new-session current-session))))
 
-(cl-defun mesh:tab--subst-session-list (new-session old-session)
+(cl-defun mesh:tab--subst-session (new-session old-session)
   (setq mesh:*sessions*
         (cl-substitute-if
          new-session
@@ -225,7 +225,7 @@
                  (mesh:get-tabs current-session))))
         (setf (mesh:get-current-tab new-current-session) next-tab)
         (mesh:set-current-session new-current-session)
-        (mesh:tab--subst-session-list new-current-session current-session)
+        (mesh:tab--subst-session new-current-session current-session)
         ;; (setq mesh:*session-list*
         ;;       (cl-subst new-current-session current-session mesh:*session-list*))
         (set-window-configuration (glof:get next-tab :conf))))))
@@ -251,7 +251,7 @@
                  (mesh:get-tabs current-session))))
         (setf (mesh:get-current-tab new-current-session) prev-tab)
         (mesh:set-current-session new-current-session)
-        (mesh:tab--subst-session-list new-current-session current-session)
+        (mesh:tab--subst-session new-current-session current-session)
         ;; (setq mesh:*session-list*
         ;;       (cl-subst new-current-session current-session mesh:*session-list*))
         (set-window-configuration (glof:get prev-tab :conf))))))
@@ -278,7 +278,7 @@
              (setf (mesh:get-current-tab new-current-session)
                    next-tab)
              (mesh:set-current-session new-current-session)
-             (mesh:tab--subst-session-list new-current-session current-session)
+             (mesh:tab--subst-session new-current-session current-session)
              (set-window-configuration (glof:get next-tab :conf))))))))
 
 (cl-defmethod mesh:tab--kill-panes (tab)

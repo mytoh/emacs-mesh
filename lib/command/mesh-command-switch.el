@@ -37,7 +37,7 @@
         ;; (setq mesh:*session-list*
         ;;       (cl-subst new-session old-session
         ;;                 (mesh:sessions)))
-        (mesh:tab--subst-session-list
+        (mesh:tab--subst-session
          new-session old-session))
       ))
   (jump-to-register mesh:*window-configuration-name*)

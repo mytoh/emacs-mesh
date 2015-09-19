@@ -74,7 +74,7 @@
             (setf (mesh:get-tabs new-session) new-tabs)
             (setf (mesh:get-current-tab new-session) new-tab)
             (mesh:set-current-session new-session)
-            (mesh:tab--subst-session-list
+            (mesh:tab--subst-session
              new-session current-session)))))))
 
 (cl-defun mesh:pane--command-kill ()
@@ -101,7 +101,7 @@
          (setf (mesh:get-current-tab new-session)
                next-tab)
          (mesh:set-current-session new-session)
-         (mesh:tab--subst-session-list new-session old-session)
+         (mesh:tab--subst-session new-session old-session)
          (mesh:tab--kill-panes old-tab)
          (set-window-configuration (glof:get next-tab :conf))))
       (_
@@ -145,7 +145,7 @@
                             (mesh:get-tabs old-session))))
         (setf (mesh:get-tabs new-session) new-tabs)
         (setf (mesh:get-current-tab new-session) new-tab)
-        (mesh:tab--subst-session-list
+        (mesh:tab--subst-session
          new-session old-session)))))
 
 (cl-defun mesh:pane--make-buffer-eshell-mode (buffer)

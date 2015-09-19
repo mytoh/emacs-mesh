@@ -51,7 +51,7 @@
         ;; (setq mesh:*session-list*
         ;;       (cl-subst new-session current-session
         ;;                 (mesh:sessions)))
-        (mesh:tab--subst-session-list
+        (mesh:tab--subst-session
          new-session current-session)
         ))
     (cl-letf* ((new-session (mesh:session--new
@@ -93,7 +93,7 @@
           ;; (setq mesh:*session-list*
           ;;       (cl-subst new-session current-session
           ;;                 (mesh:sessions)))
-          (mesh:tab--subst-session-list
+          (mesh:tab--subst-session
            new-session current-session)
           ))
       (cl-letf* ((next-session-conf (thread-first next-session
@@ -126,7 +126,7 @@
           ;; (setq mesh:*session-list*
           ;;       (cl-subst new-session current-session
           ;;                 (mesh:sessions)))
-          (mesh:tab--subst-session-list new-session current-session)
+          (mesh:tab--subst-session new-session current-session)
           ))
       (cl-letf* ((prev-session-conf (thread-first prev-session
                                       mesh:get-current-tab
