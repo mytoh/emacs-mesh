@@ -132,6 +132,18 @@
        (seq-elt sessions (1+ current-session-pos)))
       (_ nil))))
 
+(cl-defun mesh:find-prev-session (current-session sessions)
+  (cl-letf* ((current-session-pos (cl-position-if
+                                   (lambda (s)
+                                     (cl-equalp (mesh:get-name current-session)
+                                                (mesh:get-name s)))
+                                   sessions)))
+    (pcase (length sessions)
+      (1 nil)
+      ((guard (zerop current-session-pos))
+       (cl-first (last sessions)))
+      (_ (seq-elt sessions (1- current-session-pos))))))
+
 (cl-defun mesh:find-next-index-rec (index max-index lst)
   (if (or (null lst)
           (eq index max-index))
@@ -198,16 +210,6 @@
 ;;        (seq-elt sessions (1+ current-session-pos)))
 ;;       (_ nil))))
 
-
-(cl-defun mesh:find-prev-session (current-session sessions)
-  (cl-letf* ((current-session-pos (cl-position
-                                   current-session
-                                   sessions)))
-    (pcase (length sessions)
-      (1 nil)
-      ((guard (zerop current-session-pos))
-       (cl-first (last sessions)))
-      (_ (seq-elt sessions (1- current-session-pos))))))
 
 (cl-defun mesh:find-missing-index (fn lst)
   (cl-letf ((indices (seq-sort #'< (seq-map fn lst))))
