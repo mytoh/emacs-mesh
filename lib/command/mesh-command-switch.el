@@ -31,21 +31,21 @@
                  (new-tabs (cl-substitute-if new-tab
                                              (lambda (tab) (eq (glof:get tab :index)
                                                           (glof:get old-tab :index)))
-                                             tabs))))
-      (setf ((mesh:get-current-tab new-session) new-tab))
-      (setf (mesh:get-tabs new-session) new-tabs)
-      ;; (setq mesh:*session-list*
-      ;;       (cl-subst new-session old-session
-      ;;                 (mesh:session-list)))
-      (mesh:tab--subst-session-list
-       new-session old-session)
+                                             tabs)))
+        (setf (mesh:get-current-tab new-session) new-tab)
+        (setf (mesh:get-tabs new-session) new-tabs)
+        ;; (setq mesh:*session-list*
+        ;;       (cl-subst new-session old-session
+        ;;                 (mesh:sessions)))
+        (mesh:tab--subst-session-list
+         new-session old-session))
       ))
   (jump-to-register mesh:*window-configuration-name*)
   (mesh:unset-inside-session))
 
 (cl-defun mesh:command--switch-outside ()
   (window-configuration-to-register mesh:*window-configuration-name*)
-  (if (mesh:session-list)
+  (if (mesh:sessions)
       (cl-letf* ((session (mesh:current-session))
                  (conf (thread-first session
                          mesh:get-current-tab
