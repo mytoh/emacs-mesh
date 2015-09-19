@@ -55,14 +55,14 @@
         (mesh:set-inside-session))
     (cl-letf* ((new-session (mesh:session--new
                              mesh:default-session-name
-                             (mesh:session-list)))
+                             (mesh:sessions)))
                (tab (cl-first (mesh:get-tabs new-session)))
                (conf (glof:get tab :conf)))
       (cond
         (conf
          (set-window-configuration conf)
          (mesh:set-current-session new-session)
-         (setq mesh:*session-list* (list new-session))
+         (setq mesh:*sessions* (list new-session))
          (mesh:set-inside-session))
         (t
          (switch-to-buffer
@@ -78,7 +78,7 @@
                                                (glof:get tab :index)))
                                    (mesh:get-tabs new-session))))
          (mesh:set-current-session new-session)
-         (setq mesh:*session-list* (list new-session))
+         (setq mesh:*sessions* (list new-session))
          (mesh:set-inside-session))))))
 
 (provide 'mesh-command-switch)

@@ -196,13 +196,13 @@
        new-session current-session))))
 
 (cl-defun mesh:tab--subst-session-list (new-session old-session)
-  (setq mesh:*session-list*
+  (setq mesh:*sessions*
         (cl-substitute-if
          new-session
          (lambda (session)
            (cl-equalp (mesh:get-name old-session)
                       (mesh:get-name session)))
-         mesh:*session-list*)))
+         mesh:*sessions*)))
 
 (cl-defun mesh:tab--command-next ()
   (cl-letf* ((current-session (mesh:current-session))

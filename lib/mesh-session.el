@@ -30,7 +30,7 @@
              (if (seq-find
                   (lambda (session) (cl-equalp new-session-name
                                           (mesh:get-name session)))
-                  (mesh:session-list))
+                  (mesh:sessions))
                  (seq-concatenate 'string new-session-name "*")
                new-session-name)))
     (cl-letf* ((current-session (mesh:current-session))
@@ -50,13 +50,13 @@
                                   current-session-tabs)))
         ;; (setq mesh:*session-list*
         ;;       (cl-subst new-session current-session
-        ;;                 (mesh:session-list)))
+        ;;                 (mesh:sessions)))
         (mesh:tab--subst-session-list
          new-session current-session)
         ))
     (cl-letf* ((new-session (mesh:session--new
                              new-session-name
-                             (mesh:session-list)))
+                             (mesh:sessions)))
                (tab (cl-first (mesh:get-tabs new-session)))
                (conf (glof:get tab :conf)))
       (switch-to-buffer
@@ -66,14 +66,14 @@
          (glof:get :buffer)))
       (delete-other-windows)
       (mesh:set-current-session new-session)
-      (setq mesh:*session-list*
-            (append (mesh:session-list) (list new-session))))))
+      (setq mesh:*sessions*
+            (append (mesh:sessions) (list new-session))))))
 
 (cl-defun mesh:session--command-next ()
   (cl-letf* ((current-session (mesh:current-session))
              (next-session
               (mesh:find-next `[:session ,current-session ]
-                              (mesh:session-list))))
+                              (mesh:sessions))))
     (when next-session
       (cl-letf* ((current-session-tabs (mesh:get-tabs current-session))
                  (current-session-tab (mesh:get-current-tab current-session)))
@@ -92,7 +92,7 @@
                                     current-session-tabs)))
           ;; (setq mesh:*session-list*
           ;;       (cl-subst new-session current-session
-          ;;                 (mesh:session-list)))
+          ;;                 (mesh:sessions)))
           (mesh:tab--subst-session-list
            new-session current-session)
           ))
@@ -106,7 +106,7 @@
   (cl-letf* ((current-session (mesh:current-session))
              (prev-session
               (mesh:find-prev `[:session ,current-session ]
-                              (mesh:session-list))))
+                              (mesh:sessions))))
     (when prev-session
       (cl-letf* ((current-session-tabs (mesh:get-tabs current-session))
                  (current-session-tab (mesh:get-current-tab current-session)))
@@ -125,7 +125,7 @@
                    current-session-tabs)))
           ;; (setq mesh:*session-list*
           ;;       (cl-subst new-session current-session
-          ;;                 (mesh:session-list)))
+          ;;                 (mesh:sessions)))
           (mesh:tab--subst-session-list new-session current-session)
           ))
       (cl-letf* ((prev-session-conf (thread-first prev-session
@@ -136,12 +136,12 @@
 
 (cl-defun mesh:session--command-kill ()
   (cl-letf* ((current-session (mesh:current-session))
-             (current-session-list (mesh:session-list)))
+             (current-session-list (mesh:sessions)))
     (pcase (seq-length current-session-list)
       (1
        (cl-letf ((current-tab (mesh:get-current-tab current-session))
                  (current-tabs (mesh:get-tabs current-session)))
-         (mesh:unset-session-list)
+         (mesh:unset-sessions)
          (jump-to-register mesh:*window-configuration-name*)
          (mesh:unset-inside-session)
          (mesh:unset-current-session)
@@ -152,8 +152,8 @@
        (cl-letf ((current-tab (mesh:get-current-tab current-session))
                  (current-tabs (mesh:get-tabs current-session))
                  (next-session (mesh:find-next `[:session ,current-session] current-session-list)))
-         (setq mesh:*session-list*
-               (cl-remove current-session (mesh:session-list)))
+         (setq mesh:*sessions*
+               (cl-remove current-session (mesh:sessions)))
          (cl-letf* ((next-session-conf (thread-first next-session
                                          mesh:get-current-tab
                                          (glof:get :conf))))

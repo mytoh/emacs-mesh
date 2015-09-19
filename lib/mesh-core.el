@@ -15,13 +15,13 @@
 (defconst mesh:*window-configuration-name*
   :mesh-winconf)
 
-(defvar mesh:*session-list* nil)
+(defvar mesh:*sessions* nil)
 
-(cl-defun mesh:session-list ()
-  mesh:*session-list*)
+(cl-defun mesh:sessions ()
+  mesh:*sessions*)
 
-(cl-defun mesh:unset-session-list ()
-  (setq mesh:*session-list* nil))
+(cl-defun mesh:unset-sessions ()
+  (setq mesh:*sessions* nil))
 
 (defvar mesh:*inside-session-p* nil)
 

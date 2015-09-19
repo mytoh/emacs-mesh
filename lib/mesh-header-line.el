@@ -15,7 +15,7 @@
 
 (cl-defun mesh:header-line ()
   (cl-letf* ((current-session (mesh:current-session))
-             (current-session-list (mesh:session-list)))
+             (current-session-list (mesh:sessions)))
     (string-join
      (seq-map
       (lambda (session)
