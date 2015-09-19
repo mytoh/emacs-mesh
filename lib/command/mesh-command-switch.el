@@ -22,17 +22,18 @@
   (cl-letf* ((old-session (mesh:current-session))
              (tabs (mesh:get-tabs old-session))
              (old-tab (mesh:get-current-tab old-session)))
-    (cl-letf* ((new-session old-session)
-               (new-tab old-tab))
+    (cl-letf* ((new-session old-session))
       ;; (setf (mesh:get-conf new-tab) (current-window-configuration))
       ;; (setf (mesh:get-tabs new-session)
       ;;       (cl-subst new-tab old-tab tabs))
-      (setf (mesh:get-tabs new-session)
-            (thread-first new-tab
-              (glof:assoc :conf (current-window-configuration))
-              (cl-substitute-if (lambda (tab) (eq (glof:get tab :index)
-                                             (glof:get old-tab :index)))
-                                tabs)))
+      (cl-letf* ((new-tab (thread-first old-tab
+                            (glof:assoc :conf (current-window-configuration))))
+                 (new-tabs (cl-substitute-if new-tab
+                                             (lambda (tab) (eq (glof:get tab :index)
+                                                          (glof:get old-tab :index)))
+                                             tabs))))
+      (setf ((mesh:get-current-tab new-session) new-tab))
+      (setf (mesh:get-tabs new-session) new-tabs)
       ;; (setq mesh:*session-list*
       ;;       (cl-subst new-session old-session
       ;;                 (mesh:session-list)))
