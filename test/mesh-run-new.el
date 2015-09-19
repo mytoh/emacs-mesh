@@ -18,6 +18,9 @@
 (global-set-key (kbd "C-z c") #'mesh:new-tab)
 (global-set-key (kbd "C-z x") #'mesh:kill-pane)
 (global-set-key (kbd "C-z [TAB]") #'mesh:next-pane)
+(global-set-key (kbd "C-z C") #'mesh:new-session)
+(global-set-key (kbd "C-z (") #'mesh:prev-session)
+(global-set-key (kbd "C-z )") #'mesh:next-session)
 (global-set-key (kbd "C-z C-z") #'mesh:switch)
 
 ;;; mesh-run-new.el ends here
