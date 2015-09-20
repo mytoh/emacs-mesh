@@ -15,7 +15,7 @@
 
 (cl-defun mesh:mode-line ()
   (cl-letf* ((current-session (mesh:current-session))
-             (current-tab (mesh:get-current-tab current-session))
+             (current-tab (glof:get current-session :current-tab))
              (current-tab-name (glof:get current-tab :name))
              (current-tab-index (glof:get current-tab :index))
              (current-buffer-name (buffer-name (current-buffer)))

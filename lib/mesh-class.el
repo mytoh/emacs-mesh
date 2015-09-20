@@ -5,18 +5,23 @@
 (require 'cl-lib)
 (require 'eieio)
 
-(defclass mesh:<session> ()
-  ((name :initarg :name
-         :type string
-         :initform ""
-         :accessor mesh:get-name)
-   (current-tab :initarg :current-tab
-                :accessor mesh:get-current-tab)
-   (tabs :initarg :tabs
-         :type list
-         :initform nil
-         :accessor mesh:get-tabs))
-  "session class")
+;; (defclass mesh:<session> ()
+;;   ((name :initarg :name
+;;          :type string
+;;          :initform ""
+;;          :accessor mesh:get-name)
+;;    (current-tab :initarg :current-tab
+;;                 :accessor mesh:get-current-tab)
+;;    (tabs :initarg :tabs
+;;          :type list
+;;          :initform nil
+;;          :accessor mesh:get-tabs))
+;;   "session class")
+(defvar mesh:<session>-template
+  (glof:plist
+   :name ""
+   :current-tab nil
+   :tabs nil))
 
 
 ;; (defclass mesh:<pane> ()
@@ -39,8 +44,8 @@
 
 (defvar mesh:<pane>-template
   (glof:plist
-   :session ""
-   :tab ""
+   :session-name ""
+   :tab-name ""
    :index 0
    :buffer nil))
 
@@ -71,7 +76,7 @@
 (defvar mesh:<tab>-template
   (glof:plist
    :name ""
-   :session  ""
+   :session-name ""
    :index 0
    :conf nil
    :current-pane nil

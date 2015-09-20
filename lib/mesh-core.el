@@ -121,8 +121,8 @@
 (cl-defun mesh:find-next-session (current-session sessions)
   (cl-letf* ((current-session-pos (cl-position-if
                                    (lambda (s)
-                                     (cl-equalp (mesh:get-name current-session)
-                                                (mesh:get-name s)))
+                                     (cl-equalp (glof:get current-session :name)
+                                                (glof:get s :name)))
                                    sessions)))
     (pcase (1- (length sessions))
       (0 nil)
@@ -135,8 +135,8 @@
 (cl-defun mesh:find-prev-session (current-session sessions)
   (cl-letf* ((current-session-pos (cl-position-if
                                    (lambda (s)
-                                     (cl-equalp (mesh:get-name current-session)
-                                                (mesh:get-name s)))
+                                     (cl-equalp (glof:get current-session :name)
+                                                (glof:get s :name)))
                                    sessions)))
     (pcase (length sessions)
       (1 nil)
