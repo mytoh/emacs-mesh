@@ -152,7 +152,7 @@
                (next (cl-find target-index lst)))
       (if next
           next
-        (mesh:find-next-index-rec index max-index (cl-rest lst))))))
+        (mesh:find-next-index-rec index max-index (mesh:rest lst))))))
 
 (cl-defun mesh:find-next-index (index max-index lst)
   (if (eq index max-index)
@@ -195,7 +195,7 @@
                (prev (cl-find target-index lst)))
       (if prev
           prev
-        (mesh:find-prev-index-rec index min-index (cl-rest lst))))))
+        (mesh:find-prev-index-rec index min-index (mesh:rest lst))))))
 
 
 (cl-defun mesh:find-missing-index (fn lst)

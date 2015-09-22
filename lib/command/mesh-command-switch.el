@@ -50,7 +50,7 @@
     (cl-letf* ((new-session (mesh:session--new
                              mesh:default-session-name
                              (mesh:sessions)))
-               (tab (cl-first (glof:get new-session :tabs)))
+               (tab (mesh:first (glof:get new-session :tabs)))
                (conf (glof:get tab :conf)))
       (cond
         (conf
@@ -62,7 +62,7 @@
          (switch-to-buffer
           (thread-first tab
             (glof:get :panes)
-            cl-first
+            mesh:first
             (glof:get :buffer)))
          (delete-other-windows)
          (cl-letf* ((new-tab (thread-first tab
