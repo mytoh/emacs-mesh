@@ -66,7 +66,7 @@
                     obj
                     (cddr lst)
                     (cons
-                     `(setf (slot-value ,obj ,(cl-first lst)) ,(cl-second lst))
+                     `(setf (slot-value ,obj ,(mesh-first lst)) ,(cl-second lst))
                      res))))))
     `(cl-locally
          ,@(rec object body '()))))
@@ -127,7 +127,7 @@
     (pcase (1- (length sessions))
       (0 nil)
       ((pred (eq current-session-pos))
-       (cl-first sessions))
+       (mesh:first sessions))
       ((pred (< current-session-pos))
        (seq-elt sessions (1+ current-session-pos)))
       (_ nil))))
@@ -141,7 +141,7 @@
     (pcase (length sessions)
       (1 nil)
       ((guard (zerop current-session-pos))
-       (cl-first (last sessions)))
+       (mesh:first (last sessions)))
       (_ (seq-elt sessions (1- current-session-pos))))))
 
 (cl-defun mesh:find-next-index-rec (index max-index lst)
@@ -231,6 +231,26 @@
   (cl-letf* ((indices (seq-map (lambda (thing) (glof:get thing :index)) lst))
              (max-index (seq-max indices)))
     max-index))
+
+(cl-defun mesh:first (x)
+  (seq-elt x 0))
+
+(cl-defun mesh:second (x)
+  (seq-elt x 1))
+
+(cl-defun mesh:rest (x)
+  (seq-drop x 1))
+
+(cl-defun mesh:cons (a b)
+  (pcase (list (type-of a) (type-of b))
+    (`(cons vector)
+      (seq-concatenate 'vector
+                       (vector a) b))
+    (`(vector vector)
+      (seq-concatenate 'vector
+                       (vector a) b))
+    (`(,_ cons)
+      (cons a b))))
 
 (provide 'mesh-core)
 
