@@ -62,8 +62,8 @@
       (delete-other-windows)
       (mesh:set-current-session new-session)
       (setq mesh:*sessions*
-            (cons new-session
-                  (mesh:sessions))))))
+            (mesh:cons new-session
+                       (mesh:sessions))))))
 
 (cl-defun mesh:session--command-next ()
   (cl-letf* ((current-session (mesh:current-session))

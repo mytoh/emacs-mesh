@@ -67,8 +67,8 @@
                                 (glof:assoc :conf (current-window-configuration))))
                      (new-session
                       (thread-first new-session
-                        (glof:assoc :tabs (cons new-tab
-                                                (glof:get new-session :tabs))
+                        (glof:assoc :tabs (mesh:cons new-tab
+                                                     (glof:get new-session :tabs))
                                     :current-tab new-tab))))
             (mesh:set-current-session new-session)
             (mesh:tab--subst-session
@@ -99,7 +99,7 @@
         (select-window new-window))
       (cl-letf* ((new-tab (thread-first current-tab
                             (glof:assoc :current-pane new-pane)
-                            (glof:assoc :panes (cons
+                            (glof:assoc :panes (mesh:cons
                                                 new-pane
                                                 (glof:get current-tab :panes)))
                             (glof:assoc :conf (current-window-configuration))))
@@ -140,8 +140,8 @@
       (cl-letf* ((new-tab (thread-first current-tab
                             (glof:assoc :current-pane new-pane)
                             (glof:assoc :panes
-                                        (cons new-pane
-                                              (glof:get current-tab :panes)))
+                                        (mesh:cons new-pane
+                                                   (glof:get current-tab :panes)))
                             (glof:assoc :conf
                                         (current-window-configuration))))
                  (new-tabs (cl-substitute-if new-tab
