@@ -38,8 +38,8 @@
               :index pane-index
               :buffer buffer))
 
-(cl-defun mesh:pane--command-next ()
-  (cl-letf* ((current-session (mesh:current-session))
+(cl-defun mesh:pane--command-next (session)
+  (cl-letf* ((current-session session)
              (current-tab (glof:get current-session :current-tab))
              (current-pane (glof:get current-tab :current-pane))
              (next-pane
@@ -64,8 +64,8 @@
               (mesh:tab--subst-session
                new-session current-session))))))))
 
-(cl-defun mesh:pane--command-kill ()
-  (cl-letf* ((old-session (mesh:current-session))
+(cl-defun mesh:pane--command-kill (session)
+  (cl-letf* ((old-session session)
              (old-tab (glof:get old-session :current-tab))
              (old-tabs (glof:get old-session :tabs))
              (old-pane (glof:get old-tab :current-pane))
@@ -90,7 +90,7 @@
            (mesh:tab--kill-panes old-tab)
            (set-window-configuration (glof:get next-tab :conf)))))
       (_
-       (mesh:pane--command-next)
+       (mesh:pane--command-next (mesh:current-session))
        (mesh:pane--kill old-session old-tab old-pane next-pane))
       
       ;; (t
