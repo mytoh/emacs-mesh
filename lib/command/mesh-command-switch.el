@@ -14,11 +14,10 @@
 ;;;###autoload
 (cl-defun mesh:switch ()
   (interactive)
-  (if (mesh:inside-session-p)
-      (mesh:command--switch-inside)
-    (mesh:command--switch-outside)))
+  (mesh:command--switch-toggle))
 
-(cl-defun mesh:command--switch-inside ()
+(cl-defmethod mesh:command--switch-toggle (&context
+                                           ((mesh:inside-session-p) (eql t)))
   (cl-letf* ((old-session (mesh:current-session))
              (tabs (glof:get old-session :tabs))
              (old-tab (glof:get old-session :current-tab)))
@@ -37,7 +36,8 @@
   (jump-to-register mesh:*window-configuration-name*)
   (mesh:unset-inside-session))
 
-(cl-defun mesh:command--switch-outside ()
+(cl-defmethod mesh:command--switch-toggle (&context
+                                           ((mesh:inside-session-p) (eql nil)))
   (window-configuration-to-register mesh:*window-configuration-name*)
   (if (mesh:sessions)
       (cl-letf* ((session (mesh:current-session))
