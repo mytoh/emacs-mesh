@@ -52,11 +52,11 @@
           (cl-letf* ((new-tab (thread-first current-tab
                                 (glof:assoc :current-pane next-pane)
                                 (glof:assoc :conf (current-window-configuration))))
-                     (new-tabs (cl-substitute-if new-tab
-                                                 (lambda (tab)
-                                                   (eq (glof:get tab :index)
-                                                       (glof:get current-tab :index)))
-                                                 (glof:get current-session :tabs))))
+                     (new-tabs (mesh:substitute-if new-tab
+                                                   (lambda (tab)
+                                                     (eq (glof:get tab :index)
+                                                         (glof:get current-tab :index)))
+                                                   (glof:get current-session :tabs))))
             (cl-letf ((new-session (thread-first new-session
                                      (glof:assoc :tabs new-tabs
                                                  :current-tab new-tab))))
@@ -116,11 +116,11 @@
                                            (eq (glof:get pane :index)
                                                (glof:get old-pane :index)))
                                          (glof:get old-tab :panes)))))
-                 (new-tabs (cl-substitute-if new-tab
-                                             (lambda (tab)
-                                               (eq (glof:get tab :index)
-                                                   (glof:get old-tab :index)))
-                                             (glof:get old-session :tabs))))
+                 (new-tabs (mesh:substitute-if new-tab
+                                               (lambda (tab)
+                                                 (eq (glof:get tab :index)
+                                                     (glof:get old-tab :index)))
+                                               (glof:get old-session :tabs))))
         (cl-letf ((new-session (thread-first new-session
                                  (glof:assoc :tabs new-tabs
                                              :current-tab new-tab))))

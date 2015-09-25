@@ -48,11 +48,11 @@
                  (new-session current-session))
         (cl-letf* ((new-current-tab (thread-first current-tab
                                       (glof:assoc :conf (current-window-configuration))))
-                   (new-current-tabs (cl-substitute-if new-current-tab
-                                                       (lambda (tab)
-                                                         (eq (glof:get tab :index)
-                                                             (glof:get current-tab :index)))
-                                                       current-tabs))
+                   (new-current-tabs (mesh:substitute-if new-current-tab
+                                                         (lambda (tab)
+                                                           (eq (glof:get tab :index)
+                                                               (glof:get current-tab :index)))
+                                                         current-tabs))
                    (new-session (thread-first new-session
                                   (glof:assoc :current-tab new-current-tab
                                               :tabs new-current-tabs))))
@@ -103,7 +103,7 @@
                                                 new-pane
                                                 (glof:get current-tab :panes)))
                             (glof:assoc :conf (current-window-configuration))))
-                 (new-tabs (cl-substitute-if
+                 (new-tabs (mesh:substitute-if
                             new-tab
                             (lambda (tab)
                               (eq (glof:get tab :index)
@@ -144,11 +144,11 @@
                                                    (glof:get current-tab :panes)))
                             (glof:assoc :conf
                                         (current-window-configuration))))
-                 (new-tabs (cl-substitute-if new-tab
-                                             (lambda (tab)
-                                               (eq (glof:get tab :index)
-                                                   (glof:get current-tab :index)))
-                                             (glof:get current-session :tabs)))
+                 (new-tabs (mesh:substitute-if new-tab
+                                               (lambda (tab)
+                                                 (eq (glof:get tab :index)
+                                                     (glof:get current-tab :index)))
+                                               (glof:get current-session :tabs)))
                  (new-session (thread-first current-session
                                 (glof:assoc :tabs new-tabs
                                             :current-tab new-tab))))
@@ -158,7 +158,7 @@
 
 (cl-defun mesh:tab--subst-session (new-session old-session)
   (setq mesh:*sessions*
-        (cl-substitute-if
+        (mesh:substitute-if
          new-session
          (lambda (session)
            (cl-equalp (glof:get old-session :name)
@@ -175,11 +175,11 @@
         (cl-letf* ((new-tab
                     (thread-first current-tab
                       (glof:assoc :conf (current-window-configuration))))
-                   (new-tabs (cl-substitute-if new-tab
-                                               (lambda (tab)
-                                                 (eq (glof:get tab :index)
-                                                     (glof:get current-tab :index)))
-                                               (glof:get current-session :tabs)))
+                   (new-tabs (mesh:substitute-if new-tab
+                                                 (lambda (tab)
+                                                   (eq (glof:get tab :index)
+                                                       (glof:get current-tab :index)))
+                                                 (glof:get current-session :tabs)))
                    (new-current-session
                     (thread-first current-session
                       (glof:assoc :tabs new-tabs
@@ -196,11 +196,11 @@
     (when prev-tab
       (cl-letf* ((new-current-tab (thread-first current-tab
                                     (glof:assoc :conf (current-window-configuration))))
-                 (new-current-tabs (cl-substitute-if new-current-tab
-                                                     (lambda (tab)
-                                                       (eq (glof:get tab :index)
-                                                           (glof:get current-tab :index)))
-                                                     (glof:get current-session :tabs)))
+                 (new-current-tabs (mesh:substitute-if new-current-tab
+                                                       (lambda (tab)
+                                                         (eq (glof:get tab :index)
+                                                             (glof:get current-tab :index)))
+                                                       (glof:get current-session :tabs)))
                  (new-current-session
                   (thread-first current-session
                     (glof:assoc :tabs new-current-tabs
