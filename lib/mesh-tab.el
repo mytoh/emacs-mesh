@@ -23,8 +23,8 @@
                 :session-name session-name
                 :panes (list new-pane))))
 
-(cl-defun mesh:tab--command-new ()
-  (cl-letf* ((current-session (mesh:current-session))
+(cl-defun mesh:tab--command-new (session)
+  (cl-letf* ((current-session session)
              (current-session-name (glof:get current-session :name)))
     (cl-letf* ((new-tab-name mesh:default-tab-name)
                (last-tab-index
@@ -74,8 +74,8 @@
             (mesh:tab--subst-session
              new-session current-session)))))))
 
-(cl-defun mesh:tab--command-split ()
-  (cl-letf* ((current-session (mesh:current-session))
+(cl-defun mesh:tab--command-split (session)
+  (cl-letf* ((current-session session)
              (current-tab (thread-first current-session
                             (glof:get :current-tab)))
              (pane (glof:get current-tab :current-pane))
@@ -117,8 +117,8 @@
           (mesh:tab--subst-session
            new-session current-session))))))
 
-(cl-defun mesh:tab--command-vsplit ()
-  (cl-letf* ((current-session (mesh:current-session))
+(cl-defun mesh:tab--command-vsplit (session)
+  (cl-letf* ((current-session session)
              (current-tab (thread-first current-session
                             (glof:get :current-tab)))
              (pane (glof:get current-tab :current-pane))
@@ -165,8 +165,8 @@
                       (glof:get session :name)))
          mesh:*sessions*)))
 
-(cl-defun mesh:tab--command-next ()
-  (cl-letf* ((current-session (mesh:current-session))
+(cl-defun mesh:tab--command-next (session)
+  (cl-letf* ((current-session session)
              (current-tab (glof:get current-session :current-tab))
              (current-tabs (glof:get current-session :tabs))
              (next-tab (mesh:find-next `[:tab ,current-tab] current-tabs)))
@@ -188,8 +188,8 @@
           (mesh:tab--subst-session new-current-session current-session)
           (set-window-configuration (glof:get next-tab :conf)))))))
 
-(cl-defun mesh:tab--command-prev ()
-  (cl-letf* ((current-session (mesh:current-session))
+(cl-defun mesh:tab--command-prev (session)
+  (cl-letf* ((current-session session)
              (current-tab (glof:get current-session :current-tab))
              (current-tabs (glof:get current-session :tabs))
              (prev-tab (mesh:find-prev `[:tab ,current-tab] current-tabs)))
@@ -209,8 +209,8 @@
         (mesh:tab--subst-session new-current-session current-session))
       (set-window-configuration (glof:get prev-tab :conf)))))
 
-(cl-defun mesh:tab--command-kill ()
-  (cl-letf ((current-session (mesh:current-session)))
+(cl-defun mesh:tab--command-kill (session)
+  (cl-letf ((current-session session))
     (cl-letf ((current-tab (glof:get current-session :current-tab))
               (current-tabs (glof:get current-session :tabs)))
       (pcase (seq-length current-tabs)
