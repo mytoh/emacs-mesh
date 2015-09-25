@@ -65,8 +65,8 @@
             (mesh:cons new-session
                        (mesh:sessions))))))
 
-(cl-defun mesh:session--command-next ()
-  (cl-letf* ((current-session (mesh:current-session))
+(cl-defun mesh:session--command-next (session)
+  (cl-letf* ((current-session session)
              (next-session
               (mesh:find-next `[:session ,current-session ]
                               (mesh:sessions))))
@@ -93,8 +93,8 @@
         (set-window-configuration next-session-conf)
         (mesh:set-current-session next-session)))))
 
-(cl-defun mesh:session--command-prev ()
-  (cl-letf* ((current-session (mesh:current-session))
+(cl-defun mesh:session--command-prev (session)
+  (cl-letf* ((current-session session)
              (prev-session
               (mesh:find-prev `[:session ,current-session ]
                               (mesh:sessions))))
@@ -120,8 +120,8 @@
         (set-window-configuration prev-session-conf)
         (mesh:set-current-session prev-session)))))
 
-(cl-defun mesh:session--command-kill ()
-  (cl-letf* ((current-session (mesh:current-session))
+(cl-defun mesh:session--command-kill (session)
+  (cl-letf* ((current-session session)
              (current-session-list (mesh:sessions)))
     (pcase (seq-length current-session-list)
       (1

@@ -18,16 +18,19 @@
 ;;;###autoload
 (cl-defun mesh:next-session ()
   (interactive)
-  (mesh:session--command-next))
+  (mesh:session--command-next
+   (mesh:current-session)))
 
 ;;;###autoload
 (cl-defun mesh:prev-session ()
   (interactive)
-  (mesh:session--command-prev))
+  (mesh:session--command-prev
+   (mesh:current-session)))
 
 (cl-defun mesh:kill-session ()
   (interactive)
-  (mesh:session--command-kill))
+  (mesh:session--command-kill
+   (mesh:current-session)))
 
 (provide 'mesh-command-session)
 
