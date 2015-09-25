@@ -252,6 +252,14 @@
     (`(,_ cons)
       (cons a b))))
 
+(cl-defun mesh:substitute-if (new f x)
+  (seq-map
+   (lambda (e)
+     (if (funcall f e)
+         new
+       e))
+   x))
+
 (provide 'mesh-core)
 
 ;;; mesh-core.el ends here
