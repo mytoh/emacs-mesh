@@ -39,7 +39,7 @@
 (cl-defmethod mesh:command--switch-toggle (&context
                                            ((mesh:inside-session-p) (eql nil)))
   (window-configuration-to-register mesh:*window-configuration-name*)
-  (if (mesh:sessions)
+  (if (not (seq-empty-p (mesh:sessions)))
       (cl-letf* ((session (mesh:current-session))
                  (conf (thread-first session
                          (glof:get :current-tab)

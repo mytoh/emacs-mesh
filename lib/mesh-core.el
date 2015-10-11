@@ -250,7 +250,10 @@
       (seq-concatenate 'vector
                        (vector a) b))
     (`(,_ cons)
-      (cons a b))))
+      (cons a b))
+    (`(,_ vector)
+      (seq-concatenate 'vector
+                       (vector a) b))))
 
 (cl-defun mesh:substitute-if (new f x)
   (seq-map
