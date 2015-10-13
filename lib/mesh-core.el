@@ -15,13 +15,13 @@
 (defconst mesh:*window-configuration-name*
   :mesh-winconf)
 
-(defvar mesh:*sessions* nil)
+(defvar mesh:*sessions* [])
 
 (cl-defun mesh:sessions ()
   mesh:*sessions*)
 
 (cl-defun mesh:unset-sessions ()
-  (setq mesh:*sessions* nil))
+  (setq mesh:*sessions* []))
 
 (defvar mesh:*inside-session-p* nil)
 
@@ -141,7 +141,7 @@
     (pcase (length sessions)
       (1 nil)
       ((guard (zerop current-session-pos))
-       (mesh:first (last sessions)))
+       (mesh:last sessions))
       (_ (seq-elt sessions (1- current-session-pos))))))
 
 (cl-defun mesh:find-next-index-rec (index max-index lst)
@@ -251,9 +251,14 @@
                        (vector a) b))
     (`(,_ cons)
       (cons a b))
+    (`(,_ nil)
+      (cons a nil))
     (`(,_ vector)
       (seq-concatenate 'vector
                        (vector a) b))))
+
+(cl-defun mesh:removev (f seq)
+  (seq-into (seq-remove f seq) 'vector))
 
 (cl-defun mesh:substitute-if (new f x)
   (seq-map
@@ -262,6 +267,18 @@
          new
        e))
    x))
+
+(cl-defun mesh:substitute-if-v (new f x)
+  (seq-into (seq-map
+             (lambda (e)
+               (if (funcall f e)
+                   new
+                 e))
+             x)
+            'vector))
+
+(cl-defun mesh:last (seq)
+  (seq-elt seq (1- (seq-length seq))))
 
 (provide 'mesh-core)
 

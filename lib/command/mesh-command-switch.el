@@ -56,7 +56,7 @@
         (conf
          (set-window-configuration conf)
          (mesh:set-current-session new-session)
-         (setq mesh:*sessions* (list new-session))
+         (setq mesh:*sessions* (mesh:cons new-session mesh:*sessions*))
          (mesh:set-inside-session))
         (t
          (switch-to-buffer
@@ -76,7 +76,7 @@
                                     :current-tab new-tab
                                     :tabs new-tabs))))
            (mesh:set-current-session new-session)
-           (setq mesh:*sessions* (list new-session))
+           (setq mesh:*sessions* (mesh:cons new-session mesh:*sessions*))
            (mesh:set-inside-session)))))))
 
 (provide 'mesh-command-switch)

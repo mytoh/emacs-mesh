@@ -158,7 +158,7 @@
 
 (cl-defun mesh:tab--subst-session (new-session old-session)
   (setq mesh:*sessions*
-        (mesh:substitute-if
+        (mesh:substitute-if-v
          new-session
          (lambda (session)
            (cl-equalp (glof:get old-session :name)

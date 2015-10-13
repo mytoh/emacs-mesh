@@ -13,24 +13,26 @@
 
 
 (cl-defun mesh:session--new (session-name sessions)
-  (if-let ((found (seq-find (lambda (s) (cl-equalp (glof:get s :name)
-                                              session-name))
-                            sessions)))
-      found
-    (cl-letf ((new-tab (mesh:tab--new
-                        mesh:default-tab-name
-                        session-name)))
-      (glof:plist
-       :name session-name
-       :current-tab new-tab
-       :tabs (list new-tab)))))
+  (let ((found (seq-find (lambda (s) (cl-equalp (glof:get s :name)
+                                           session-name))
+                         sessions)))
+    (if (not (seq-empty-p found))
+        found
+      (cl-letf ((new-tab (mesh:tab--new
+                          mesh:default-tab-name
+                          session-name)))
+        (glof:plist
+         :name session-name
+         :current-tab new-tab
+         :tabs (list new-tab))))))
 
 (cl-defun mesh:session--command-create (new-session-name)
   (cl-letf ((new-session-name
-             (if (seq-find
-                  (lambda (session) (cl-equalp new-session-name
-                                          (glof:get session :name)))
-                  (mesh:sessions))
+             (if (not (seq-empty-p
+                       (seq-find
+                        (lambda (session) (cl-equalp new-session-name
+                                                (glof:get session :name)))
+                        (mesh:sessions))))
                  (seq-concatenate 'string new-session-name "*")
                new-session-name)))
     (cl-letf* ((current-session (mesh:current-session))
@@ -139,7 +141,7 @@
                  (current-tabs (glof:get current-session :tabs))
                  (next-session (mesh:find-next `[:session ,current-session] current-session-list)))
          (setq mesh:*sessions*
-               (cl-remove current-session (mesh:sessions)))
+               (mesh:removev current-session (mesh:sessions)))
          (cl-letf* ((next-session-conf (thread-first next-session
                                          (glof:get :current-tab)
                                          (glof:get :conf))))
