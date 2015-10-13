@@ -54,23 +54,6 @@
      (when (mesh:inside-session-p)
        ,@body)))
 
-(cl-defmacro mesh:set-slots (object &rest body)
-  (declare (debug t)
-           (indent 1))
-  (cl-labels ((rec (obj lst res)
-                (pcase lst
-                  (`()
-                    (reverse res))
-                  (_
-                   (rec
-                    obj
-                    (cddr lst)
-                    (cons
-                     `(setf (slot-value ,obj ,(mesh-first lst)) ,(cl-second lst))
-                     res))))))
-    `(cl-locally
-         ,@(rec object body '()))))
-
 (cl-defun mesh:find-next (thing lst)
   (pcase thing
     (`[:pane ,pane] (mesh:find-next-pane pane lst))
