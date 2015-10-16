@@ -48,11 +48,11 @@
                  (new-session current-session))
         (cl-letf* ((new-current-tab (thread-first current-tab
                                       (glof:assoc :conf (current-window-configuration))))
-                   (new-current-tabs (mesh:substitute-if new-current-tab
-                                                         (lambda (tab)
-                                                           (eq (glof:get tab :index)
-                                                               (glof:get current-tab :index)))
-                                                         current-tabs))
+                   (new-current-tabs (mesh:substitute-if-v new-current-tab
+                                                           (lambda (tab)
+                                                             (eq (glof:get tab :index)
+                                                                 (glof:get current-tab :index)))
+                                                           current-tabs))
                    (new-session (thread-first new-session
                                   (glof:assoc :current-tab new-current-tab
                                               :tabs new-current-tabs))))
@@ -67,7 +67,7 @@
                                 (glof:assoc :conf (current-window-configuration))))
                      (new-session
                       (thread-first new-session
-                        (glof:assoc :tabs (mesh:cons new-tab
+                        (glof:assoc :tabs (mesh:conj new-tab
                                                      (glof:get new-session :tabs))
                                     :current-tab new-tab))))
             (mesh:set-current-session new-session)
@@ -99,11 +99,11 @@
         (select-window new-window))
       (cl-letf* ((new-tab (thread-first current-tab
                             (glof:assoc :current-pane new-pane)
-                            (glof:assoc :panes (mesh:cons
+                            (glof:assoc :panes (mesh:conj
                                                 new-pane
                                                 (glof:get current-tab :panes)))
                             (glof:assoc :conf (current-window-configuration))))
-                 (new-tabs (mesh:substitute-if
+                 (new-tabs (mesh:substitute-if-v
                             new-tab
                             (lambda (tab)
                               (eq (glof:get tab :index)
@@ -140,15 +140,15 @@
       (cl-letf* ((new-tab (thread-first current-tab
                             (glof:assoc :current-pane new-pane)
                             (glof:assoc :panes
-                                        (mesh:cons new-pane
+                                        (mesh:conj new-pane
                                                    (glof:get current-tab :panes)))
                             (glof:assoc :conf
                                         (current-window-configuration))))
-                 (new-tabs (mesh:substitute-if new-tab
-                                               (lambda (tab)
-                                                 (eq (glof:get tab :index)
-                                                     (glof:get current-tab :index)))
-                                               (glof:get current-session :tabs)))
+                 (new-tabs (mesh:substitute-if-v new-tab
+                                                 (lambda (tab)
+                                                   (eq (glof:get tab :index)
+                                                       (glof:get current-tab :index)))
+                                                 (glof:get current-session :tabs)))
                  (new-session (thread-first current-session
                                 (glof:assoc :tabs new-tabs
                                             :current-tab new-tab))))
@@ -175,11 +175,11 @@
         (cl-letf* ((new-tab
                     (thread-first current-tab
                       (glof:assoc :conf (current-window-configuration))))
-                   (new-tabs (mesh:substitute-if new-tab
-                                                 (lambda (tab)
-                                                   (eq (glof:get tab :index)
-                                                       (glof:get current-tab :index)))
-                                                 (glof:get current-session :tabs)))
+                   (new-tabs (mesh:substitute-if-v new-tab
+                                                   (lambda (tab)
+                                                     (eq (glof:get tab :index)
+                                                         (glof:get current-tab :index)))
+                                                   (glof:get current-session :tabs)))
                    (new-current-session
                     (thread-first current-session
                       (glof:assoc :tabs new-tabs
@@ -196,11 +196,11 @@
     (when prev-tab
       (cl-letf* ((new-current-tab (thread-first current-tab
                                     (glof:assoc :conf (current-window-configuration))))
-                 (new-current-tabs (mesh:substitute-if new-current-tab
-                                                       (lambda (tab)
-                                                         (eq (glof:get tab :index)
-                                                             (glof:get current-tab :index)))
-                                                       (glof:get current-session :tabs)))
+                 (new-current-tabs (mesh:substitute-if-v new-current-tab
+                                                         (lambda (tab)
+                                                           (eq (glof:get tab :index)
+                                                               (glof:get current-tab :index)))
+                                                         (glof:get current-session :tabs)))
                  (new-current-session
                   (thread-first current-session
                     (glof:assoc :tabs new-current-tabs
@@ -218,7 +218,7 @@
         (_ (cl-letf* ((next-tab (mesh:find-next `[:tab ,current-tab] current-tabs))
                       (new-current-session current-session))
              (mesh:tab--kill-panes current-tab)
-             (cl-letf* ((new-current-tabs (seq-remove
+             (cl-letf* ((new-current-tabs (mesh:removev
                                            (lambda (tab)
                                              (eq (glof:get tab :index)
                                                  (glof:get current-tab :index)))

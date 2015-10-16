@@ -9,7 +9,7 @@
   (glof:plist
    :name ""
    :current-tab nil
-   :tabs nil))
+   :tabs []))
 
 (defvar mesh:<pane>-template
   (glof:plist

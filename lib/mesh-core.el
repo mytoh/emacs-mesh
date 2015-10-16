@@ -224,7 +224,7 @@
 (cl-defun mesh:rest (x)
   (seq-drop x 1))
 
-(cl-defun mesh:cons (a b)
+(cl-defun mesh:conj (a b)
   (pcase (list (type-of a) (type-of b))
     (`(cons vector)
       (seq-concatenate 'vector
