@@ -21,7 +21,7 @@
                 :index index
                 :current-pane new-pane
                 :session-name session-name
-                :panes (list new-pane))))
+                :panes `[,new-pane])))
 
 (cl-defun mesh:tab--command-new (session)
   (cl-letf* ((current-session session)
@@ -127,7 +127,8 @@
                         (lambda (p) (glof:get p :index))
                         (glof:get current-tab :panes))))
              (pane-missing-indices
-              (mesh:find-missing-index (lambda (p) (glof:get p :index)) (glof:get current-tab :panes))))
+              (mesh:find-missing-index (lambda (p) (glof:get p :index))
+                                       (glof:get current-tab :panes))))
     (cl-letf* ((new-pane (mesh:pane--create
                           current-tab
                           (glof:get current-session :name)

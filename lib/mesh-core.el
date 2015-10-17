@@ -73,15 +73,18 @@
              (next-index (mesh:find-next-index current-index
                                                max-index
                                                indices)))
-    (if next-index
-        (seq-find
-         (lambda (pane)
-           (eq next-index (glof:get pane :index)))
-         panes)
-      (seq-find
-       (lambda (pane)
-         (eq mix-index (glof:get pane :index)))
-       panes))))
+    (pcase (seq-length panes)
+      (1 nil)
+      (_ 
+       (if next-index
+           (seq-find
+            (lambda (pane)
+              (eq next-index (glof:get pane :index)))
+            panes)
+         (seq-find
+          (lambda (pane)
+            (eq mix-index (glof:get pane :index)))
+          panes))))))
 
 (cl-defun mesh:find-next-tab (current-tab tabs)
   (cl-letf* ((indices (seq-sort #'< (seq-map (lambda (tab) (glof:get tab :index)) tabs)))
@@ -128,11 +131,11 @@
       (_ (seq-elt sessions (1- current-session-pos))))))
 
 (cl-defun mesh:find-next-index-rec (index max-index lst)
-  (if (or (null lst)
+  (if (or (seq-empty-p lst)
           (eq index max-index))
       nil
     (cl-letf* ((target-index (1+ index))
-               (next (cl-find target-index lst)))
+               (next (seq-find (lambda (e) (cl-equalp e target-index))  lst)))
       (if next
           next
         (mesh:find-next-index-rec index max-index (mesh:rest lst))))))
@@ -171,11 +174,11 @@
         (mesh:find-prev-index-rec (1- index) min-index lst)))))
 
 (cl-defun mesh:find-prev-index-rec (index min-index lst)
-  (if (or (null lst)
+  (if (or (seq-empty-p lst)
           (eq index min-index))
       nil
     (cl-letf* ((target-index (1- index))
-               (prev (cl-find target-index lst)))
+               (prev (seq-find (lambda (e) (cl-equalp e target-index)) lst)))
       (if prev
           prev
         (mesh:find-prev-index-rec index min-index (mesh:rest lst))))))

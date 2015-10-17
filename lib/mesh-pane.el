@@ -45,7 +45,7 @@
              (next-pane
               (mesh:find-next `[:pane ,current-pane]
                               (glof:get current-tab :panes))))
-    (when next-pane
+    (when (not (seq-empty-p next-pane))
       (cl-letf ((next-pane-buffer (glof:get next-pane :buffer)))
         (switch-to-buffer-other-window next-pane-buffer)
         (cl-letf* ((new-session current-session))
@@ -111,7 +111,7 @@
                             (glof:assoc :conf (current-window-configuration))
                             (glof:assoc :current-pane next-pane)
                             (glof:assoc :panes
-                                        (seq-remove
+                                        (mesh:removev
                                          (lambda (pane)
                                            (eq (glof:get pane :index)
                                                (glof:get old-pane :index)))

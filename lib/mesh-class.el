@@ -25,7 +25,7 @@
    :index 0
    :conf nil
    :current-pane nil
-   :panes nil))
+   :panes []))
 
 
 (provide 'mesh-class)
