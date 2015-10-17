@@ -32,7 +32,7 @@
 
 (cl-defun mesh:pane--make-pane
     (session-name tab-name pane-index buffer)
-  (glof:assoc mesh:<pane>-template
+  (glof:assoc mesh:<pane>
               :session-name session-name
               :tab-name tab-name
               :index pane-index

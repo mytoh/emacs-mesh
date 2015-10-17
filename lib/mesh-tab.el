@@ -15,7 +15,7 @@
   (cl-letf* ((new-pane (mesh:pane--new session-name
                                        tab-name
                                        index)))
-    (glof:assoc mesh:<tab>-template
+    (glof:assoc mesh:<tab>
                 :name tab-name
                 :conf nil
                 :index index
