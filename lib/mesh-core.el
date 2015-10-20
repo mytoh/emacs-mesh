@@ -110,13 +110,7 @@
                                    current-session
                                    (lambda (a b)
                                      (cl-equalp (glof:get a :name)
-                                                (glof:get b :name)))))
-             ;; (current-session-pos (cl-position-if
-             ;;                       (lambda (s)
-             ;;                         (cl-equalp (glof:get current-session :name)
-             ;;                                    (glof:get s :name)))
-             ;;                       sessions))
-             )
+                                                (glof:get b :name))))))
     (pcase (if current-session-pos
                (1- (seq-length sessions))
              0)
