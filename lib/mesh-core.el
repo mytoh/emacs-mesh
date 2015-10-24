@@ -75,16 +75,16 @@
                                             indices)))
     (pcase (seq-length panes)
       (1 nil)
-      (_ 
-       (if next-index
-           (seq-find
-            (lambda (pane)
-              (eq next-index (glof:get pane :index)))
-            panes)
-         (seq-find
-          (lambda (pane)
-            (eq mix-index (glof:get pane :index)))
-          panes))))))
+      ((let `nil next-index)
+       (seq-find
+        (lambda (pane)
+          (eq mix-index (glof:get pane :index)))
+        panes))
+      ((let t next-index)
+       (seq-find
+        (lambda (pane)
+          (eq next-index (glof:get pane :index)))
+        panes)))))
 
 (cl-defun mesh:find-next-tab (current-tab tabs)
   (cl-letf* ((indices (seq-sort #'< (seq-map (lambda (tab) (glof:get tab :index)) tabs)))
