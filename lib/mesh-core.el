@@ -111,10 +111,8 @@
                                    (lambda (a b)
                                      (cl-equalp (glof:get a :name)
                                                 (glof:get b :name))))))
-    (pcase (if current-session-pos
-               (1- (seq-length sessions))
-             0)
-      (0 nil)
+    (pcase (1- (seq-length sessions))
+      ((let `nil current-session-pos) nil)
       ((pred (eq current-session-pos))
        (mesh:first sessions))
       ((pred (< current-session-pos))
