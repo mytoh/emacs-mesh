@@ -80,7 +80,7 @@
         (lambda (pane)
           (eq mix-index (glof:get pane :index)))
         panes))
-      ((let t next-index)
+      ((let _ next-index)
        (seq-find
         (lambda (pane)
           (eq next-index (glof:get pane :index)))
