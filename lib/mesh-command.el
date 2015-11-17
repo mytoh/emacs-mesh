@@ -2,9 +2,6 @@
 
 ;;; Code:
 
-(require 'cl-lib)
-(require 'subr-x)
-
 (require 'mesh-core "lib/mesh-core")
 (require 'mesh-class "lib/mesh-class")
 (require 'mesh-session "lib/mesh-session")
