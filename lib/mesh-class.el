@@ -3,7 +3,6 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'eieio)
 
 (defvar mesh:<session>
   (glof:plist

@@ -3,7 +3,6 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'eieio)
 (require 'seq)
 (require 'glof)
 
@@ -14,7 +13,7 @@
 
 (cl-defun mesh:session--new (session-name sessions)
   (let ((found (seq-find (lambda (s) (cl-equalp (glof:get s :name)
-                                                session-name))
+                                           session-name))
                          sessions)))
     (if (not (seq-empty-p found))
         found
@@ -31,7 +30,7 @@
              (if (not (seq-empty-p
                        (seq-find
                         (lambda (session) (cl-equalp new-session-name
-                                                     (glof:get session :name)))
+                                                (glof:get session :name)))
                         (glof:get state :sessions))))
                  (seq-concatenate 'string new-session-name "*")
                new-session-name)))
@@ -102,24 +101,24 @@
   (cl-letf* ((current-session (glof:get state :current-session))
              (prev-session
               (mesh:find-prev `[:session ,current-session]
-                           (glof:get state :sessions))))
+                              (glof:get state :sessions))))
     (when prev-session
       (cl-letf* ((current-session-tabs (glof:get current-session :tabs))
                  (current-session-tab (glof:get current-session :current-tab)))
         (cl-letf* ((new-tab (thread-first current-session-tab
                               (glof:assoc :conf (current-window-configuration))))
                    (new-tabs (mesh:substitute-if-v new-tab
-                                                (lambda (tab)
-                                                  (eq (glof:get tab :index)
-                                                      (glof:get current-session-tab :index)))
-                                                current-session-tabs)))
+                                                   (lambda (tab)
+                                                     (eq (glof:get tab :index)
+                                                         (glof:get current-session-tab :index)))
+                                                   current-session-tabs)))
           (cl-letf* ((new-state (glof:assoc state
                                             :sessions
                                             (mesh:tab--subst-session state
-                                                                  (thread-first current-session
-                                                                    (glof:assoc :current-tab new-tab
-                                                                                :tabs new-tabs))
-                                                                  current-session)))
+                                                                     (thread-first current-session
+                                                                       (glof:assoc :current-tab new-tab
+                                                                                   :tabs new-tabs))
+                                                                     current-session)))
                      (prev-session-conf (thread-first prev-session
                                           (glof:get :current-tab)
                                           (glof:get :conf))))

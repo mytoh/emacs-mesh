@@ -3,7 +3,6 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'eieio)
 (require 'glof)
 (require 'mesh-class "lib/mesh-class")
 (require 'mesh-core "lib/mesh-core")
