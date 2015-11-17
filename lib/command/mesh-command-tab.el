@@ -12,27 +12,33 @@
 
 ;;;###autoload
 (mesh:defcommand mesh:split-tab
-  (mesh:tab--command-split (mesh:current-session)))
+  (setq mesh:*state*
+        (mesh:tab--command-split mesh:*state*)))
 
 ;;;###autoload
 (mesh:defcommand mesh:new-tab
-  (mesh:tab--command-new (mesh:current-session)))
+  (setq mesh:*state*
+        (mesh:tab--command-new mesh:*state*)))
 
 ;;;###autoload
 (mesh:defcommand mesh:vsplit-tab
-  (mesh:tab--command-vsplit (mesh:current-session)))
+  (setq mesh:*state*
+        (mesh:tab--command-vsplit mesh:*state*)))
 
 ;;;###autoload
 (mesh:defcommand mesh:next-tab
-  (mesh:tab--command-next (mesh:current-session)))
+  (setq mesh:*state*
+        (mesh:tab--command-next mesh:*state*)))
 
 ;;;###autoload
 (mesh:defcommand mesh:prev-tab
-  (mesh:tab--command-prev (mesh:current-session)))
+  (setq mesh:*state*
+        (mesh:tab--command-prev mesh:*state*)))
 
 ;;;###autoload
 (mesh:defcommand mesh:kill-tab
-  (mesh:tab--command-kill (mesh:current-session)))
+  (setq mesh:*state*
+        (mesh:tab--command-kill mesh:*state*)))
 
 (provide 'mesh-command-tab)
 

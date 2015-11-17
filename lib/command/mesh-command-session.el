@@ -11,26 +11,29 @@
 ;;;###autoload
 (cl-defun mesh:new-session (new-session-name)
   (interactive "sSession name: ")
-  (mesh:session--command-create new-session-name))
-
-(cl-defun mesh:kill-session ())
+  (setq mesh:*state*
+        (mesh:session--command-create mesh:*state*
+                                   new-session-name)))
 
 ;;;###autoload
 (cl-defun mesh:next-session ()
   (interactive)
-  (mesh:session--command-next
-   (mesh:current-session)))
+  (setq mesh:*state*
+        (mesh:session--command-next
+         mesh:*state*)))
 
 ;;;###autoload
 (cl-defun mesh:prev-session ()
   (interactive)
-  (mesh:session--command-prev
-   (mesh:current-session)))
+  (setq mesh:*state*
+        (mesh:session--command-prev
+         mesh:*state*)))
 
 (cl-defun mesh:kill-session ()
   (interactive)
-  (mesh:session--command-kill
-   (mesh:current-session)))
+  (setq mesh:*state*
+        (mesh:session--command-kill
+         mesh:*state*)))
 
 (provide 'mesh-command-session)
 

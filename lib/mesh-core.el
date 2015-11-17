@@ -15,43 +15,20 @@
 (defconst mesh:*window-configuration-name*
   :mesh-winconf)
 
-(defvar mesh:*sessions* [])
+(defvar mesh:*state* ())
 
-(cl-defun mesh:sessions ()
-  mesh:*sessions*)
-
-(cl-defun mesh:unset-sessions ()
-  (setq mesh:*sessions* []))
-
-(defvar mesh:*inside-session-p* nil)
-
-(cl-defun mesh:inside-session-p ()
-  (and mesh:*inside-session-p*
-       (eq major-mode 'eshell-mode)))
-
-(cl-defun mesh:set-inside-session ()
-  (setq mesh:*inside-session-p* t))
-
-(cl-defun mesh:unset-inside-session ()
-  (setq mesh:*inside-session-p* nil))
-
-(defvar mesh:*current-session* nil)
-
-(cl-defun mesh:current-session ()
-  mesh:*current-session*)
-
-(cl-defun mesh:set-current-session (session)
-  (setq mesh:*current-session* session))
-
-(cl-defun mesh:unset-current-session ()
-  (setq mesh:*current-session* nil))
+(cl-defun mesh:initial-state ()
+  (glof:assoc ()
+              :current-session nil
+              :sessions []
+              :inside-session-p nil))
 
 (cl-defmacro mesh:defcommand (name &rest body)
   (declare (debug t)
            (indent 1))
   `(cl-defun ,name ()
      (interactive)
-     (when (mesh:inside-session-p)
+     (when (glof:get mesh:*state* :inside-session-p)
        ,@body)))
 
 (cl-defun mesh:find-next (thing lst)

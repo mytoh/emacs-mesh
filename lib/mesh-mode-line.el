@@ -10,17 +10,16 @@
 
 (defcustom mesh:mode-line-format
   `((:eval
-     (mesh:mode-line)))
+     (mesh:mode-line mesh:*state*)))
   "mode line for mesh")
 
-(cl-defun mesh:mode-line ()
-  (cl-letf* ((current-session (mesh:current-session))
+(cl-defun mesh:mode-line (state)
+  (cl-letf* ((current-session (glof:get state :current-session))
              (current-tab (glof:get current-session :current-tab))
              (current-tab-name (glof:get current-tab :name))
              (current-tab-index (glof:get current-tab :index))
              (current-buffer-name (buffer-name (current-buffer)))
-             (current-pane-index (thread-first
-                                     (seq-find
+             (current-pane-index (thread-first (seq-find
                                       (lambda (pane) (cl-equalp current-buffer-name
                                                            (buffer-name (glof:get pane :buffer))))
                                       (glof:get current-tab :panes))

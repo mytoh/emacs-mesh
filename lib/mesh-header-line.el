@@ -10,12 +10,12 @@
 
 (defcustom mesh:header-line-format
   `((:eval
-     (mesh:header-line)))
+     (mesh:header-line mesh:*state*)))
   "header line for mesh")
 
-(cl-defun mesh:header-line ()
-  (cl-letf* ((current-session (mesh:current-session))
-             (current-session-list (mesh:sessions)))
+(cl-defun mesh:header-line (state)
+  (cl-letf* ((current-session (glof:get state :current-session))
+             (current-session-list (glof:get state :sessions)))
     (string-join
      (seq-map
       (lambda (session)
