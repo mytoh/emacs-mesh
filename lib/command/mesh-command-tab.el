@@ -4,6 +4,7 @@
 
 (require 'cl-lib)
 (require 'subr-x)
+(require 'glof)
 
 (require 'mesh-core "lib/mesh-core")
 (require 'mesh-session "lib/mesh-session")

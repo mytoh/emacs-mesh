@@ -3,6 +3,7 @@
 ;;; Code:
 
 (require 'cl-lib)
+(require 'glof)
 
 (defvar mesh:<session>
   (glof:plist
