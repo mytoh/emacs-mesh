@@ -48,9 +48,8 @@
   (window-configuration-to-register mesh:*window-configuration-name*)
   (if (not (seq-empty-p (glof:get state :sessions)))
       (cl-letf* ((session (glof:get state :current-session))
-                 (conf (thread-first session
-                         (glof:get :current-tab)
-                         (glof:get :conf))))
+                 (conf (glof:get-in session
+                                    [:current-tab :conf])))
         (set-window-configuration conf)
         (glof:assoc state
                     :inside-session-p t))
