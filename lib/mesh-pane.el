@@ -18,9 +18,12 @@
     (mesh:pane--make-pane
      session-name tab-name 0 buffer)))
 
-(cl-defun mesh:pane--create (tab session-name &optional (pane-index 0))
-  (cl-letf* ((tab-name (glof:get tab :name))
-             (tab-index (glof:get tab :index))
+(cl-defun mesh:pane--create (state &optional (pane-index 0))
+  (cl-letf* ((current-session (glof:get state :current-session))
+             (session-name (glof:get current-session :name))
+             (current-tab (glof:get current-session :current-tab))
+             (tab-name (glof:get current-tab :name))
+             (tab-index (glof:get current-tab :index))
              (buffer (mesh:pane--get-buffer-create
                       session-name tab-name tab-index pane-index)))
     (mesh:pane--make-buffer-eshell-mode buffer)

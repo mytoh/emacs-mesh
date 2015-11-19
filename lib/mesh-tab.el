@@ -82,8 +82,7 @@
               (mesh:find-missing-index (lambda (p) (glof:get p :index))
                                     (glof:get current-tab :panes))))
     (cl-letf* ((new-pane (mesh:pane--create
-                          current-tab
-                          (glof:get current-session :name)
+                          state
                           (if pane-missing-indices
                               (mesh:first pane-missing-indices)
                             (1+  pane-last-index)))))
@@ -125,8 +124,7 @@
               (mesh:find-missing-index (lambda (p) (glof:get p :index))
                                     (glof:get current-tab :panes))))
     (cl-letf* ((new-pane (mesh:pane--create
-                          current-tab
-                          (glof:get current-session :name)
+                          state
                           (if pane-missing-indices
                               (mesh:first pane-missing-indices)
                             (1+  pane-last-index)))))
