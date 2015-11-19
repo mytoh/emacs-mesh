@@ -18,7 +18,7 @@
     (mesh:pane--make-pane
      session-name tab-name 0 buffer)))
 
-(cl-defmethod mesh:pane--create (tab session-name &optional (pane-index 0))
+(cl-defun mesh:pane--create (tab session-name &optional (pane-index 0))
   (cl-letf* ((tab-name (glof:get tab :name))
              (tab-index (glof:get tab :index))
              (buffer (mesh:pane--get-buffer-create
