@@ -245,6 +245,10 @@
 (cl-defun mesh:last (seq)
   (seq-elt seq (1- (seq-length seq))))
 
+(cl-defun mesh::handle-command (f state &rest args)
+  (setq mesh:*state*
+        (apply #'funcall f state args)))
+
 (provide 'mesh-core)
 
 ;;; mesh-core.el ends here
