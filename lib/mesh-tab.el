@@ -234,7 +234,7 @@
                            :sessions (mesh:tab--subst-session state
                                                            new-current-session current-session)))))))))
 
-(cl-defmethod mesh:tab--kill-panes (tab)
+(cl-defun mesh:tab--kill-panes (tab)
   (seq-each
    #'kill-buffer
    (seq-map

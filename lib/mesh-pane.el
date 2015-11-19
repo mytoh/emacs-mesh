@@ -9,7 +9,7 @@
 (require 'mesh-mode-line "lib/mesh-mode-line")
 (require 'mesh-header-line "lib/mesh-header-line")
 
-(cl-defmethod mesh:pane--new (session-name tab-name tab-index)
+(cl-defun mesh:pane--new (session-name tab-name tab-index)
   (cl-letf* ((buffer (mesh:pane--get-buffer-create
                       session-name tab-name tab-index 0)))
     (mesh:pane--make-buffer-eshell-mode buffer)
