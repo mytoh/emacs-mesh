@@ -17,10 +17,10 @@
   (cl-letf ((state (if mesh:*state* mesh:*state*
                      (mesh:initial-state))))
     (if (glof:get state :inside-session-p)
-        (mesh::handle-command #'mesh:command--switch-inside
-                           state)
-      (mesh::handle-command #'mesh:command--switch-outside
-                         state))))
+        (mesh::update #'mesh:command--switch-inside
+                   state)
+      (mesh::update #'mesh:command--switch-outside
+                 state))))
 
 (cl-defun mesh:command--switch-inside (state)
   (cl-letf* ((old-session (glof:get state :current-session))
