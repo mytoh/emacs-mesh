@@ -51,9 +51,9 @@
         (set-window-configuration conf)
         (glof:assoc state
                     :inside-session-p t))
-    (cl-letf* ((new-session (mesh:session--new
-                             mesh:default-session-name
-                             (glof:get state :sessions)))
+    (cl-letf* ((new-session
+                (thread-last (glof:get state :sessions)
+                  (mesh:session--new mesh:default-session-name)))
                (tab (mesh:first (glof:get new-session :tabs)))
                (conf (glof:get tab :conf)))
       (cond

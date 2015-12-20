@@ -20,13 +20,13 @@
      (seq-map
       (lambda (session)
         (if (cl-equalp session current-session)
-            (propertize
-             (glof:get session :name)
-             'face `( :foreground ,(face-foreground 'font-lock-type-face)
-                                  :background ,(face-background 'default)))
-          (propertize
-           (glof:get session :name)
-           'face 'font-lock-comment-face)))
+            (thread-first session
+              (glof:get :name)
+              (propertize 'face `( :foreground ,(face-foreground 'font-lock-type-face)
+                                               :background ,(face-background 'default))))
+          (thread-first session
+            (glof:get :name)
+            (propertize 'face 'font-lock-comment-face))))
       current-session-list)
      " ")))
 
