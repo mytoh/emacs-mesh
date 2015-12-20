@@ -106,14 +106,18 @@
       ;;  )
       )))
 
+(cl-defun mesh:pane--kill-buffer (pane)
+  (cl-letf* ((buffer (glof:get pane :buffer))
+             (window-to-kill (get-buffer-window buffer)))
+    (with-current-buffer buffer
+      (kill-buffer buffer)
+      (delete-window window-to-kill))))
+
 (cl-defun mesh:pane--kill (state session tab pane next-pane)
   (cl-letf* ((old-session session)
              (old-tab tab)
              (old-pane pane))
-    (with-current-buffer (glof:get old-pane :buffer)
-      (cl-letf ((window-to-kill (get-buffer-window (glof:get old-pane :buffer))))
-        (kill-buffer (glof:get old-pane :buffer))
-        (delete-window window-to-kill)))
+    (mesh:pane--kill-buffer old-pane)
     (cl-letf* ((new-tab (thread-first old-tab
                           (glof:assoc :conf (current-window-configuration))
                           (glof:assoc :current-pane next-pane)
