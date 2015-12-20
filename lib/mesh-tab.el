@@ -90,11 +90,12 @@
         (set-window-buffer new-window (glof:get new-pane :buffer))
         (select-window new-window))
       (cl-letf* ((new-tab (thread-first current-tab
-                            (glof:assoc :current-pane new-pane)
-                            (glof:assoc :panes (mesh:conj
-                                                new-pane
-                                                (glof:get current-tab :panes)))
-                            (glof:assoc :conf (current-window-configuration))))
+                            (glof:assoc
+                             :current-pane new-pane
+                             :panes (mesh:conj
+                                     new-pane
+                                     (glof:get current-tab :panes))
+                             :conf (current-window-configuration))))
                  (new-tabs (mesh:substitute-if-v
                             new-tab
                             (lambda (tab)
@@ -132,11 +133,11 @@
         (set-window-buffer new-window (glof:get new-pane :buffer))
         (select-window new-window))
       (cl-letf* ((new-tab (thread-first current-tab
-                            (glof:assoc :current-pane new-pane)
-                            (glof:assoc :panes
+                            (glof:assoc :current-pane new-pane
+                                        :panes
                                         (mesh:conj new-pane
-                                                (glof:get current-tab :panes)))
-                            (glof:assoc :conf
+                                                (glof:get current-tab :panes))
+                                        :conf
                                         (current-window-configuration))))
                  (new-tabs (mesh:substitute-if-v new-tab
                                               (lambda (tab)
