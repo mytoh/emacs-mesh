@@ -4,6 +4,7 @@
 
 (require 'seq)
 (require 'glof)
+(require 'tupper)
 (require 'mesh-class "lib/mesh-class")
 
 (defcustom mesh:default-tab-name "eshell"
@@ -245,9 +246,8 @@
 (cl-defun mesh:last (seq)
   (seq-elt seq (1- (seq-length seq))))
 
-(cl-defun mesh::update (state f &rest args)
-  (setq mesh:*state*
-        (apply #'funcall f state args)))
+(cl-defun mesh::update (f &rest args)
+  (apply #'tupper:update! 'mesh:*state* f args))
 
 (provide 'mesh-core)
 
