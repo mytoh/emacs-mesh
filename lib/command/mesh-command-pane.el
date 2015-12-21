@@ -13,11 +13,11 @@
 
 ;;;###autoload
 (mesh:defcommand mesh:kill-pane
-  (mesh::update  mesh:*state* #'mesh:pane--command-kill))
+  (mesh::update #'mesh:pane--command-kill))
 
 ;;;###autoload
 (mesh:defcommand mesh:next-pane
-  (mesh::update  mesh:*state* #'mesh:pane--command-next))
+  (mesh::update #'mesh:pane--command-next))
 
 (cl-defun mesh:prev-pane ())
 
