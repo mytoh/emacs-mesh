@@ -52,8 +52,8 @@
         (switch-to-buffer-other-window next-pane-buffer)
         (cl-letf* ((new-session current-session))
           (cl-letf* ((new-tab (thread-first current-tab
-                                (glof:assoc :current-pane next-pane)
-                                :conf (current-window-configuration)))
+                                (glof:assoc :current-pane next-pane
+                                            :conf (current-window-configuration))))
                      (new-tabs (mesh:substitute-if-v new-tab
                                                   (lambda (tab)
                                                     (eq (glof:get tab :index)
