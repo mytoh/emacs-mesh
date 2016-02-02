@@ -5,6 +5,7 @@
 (require 'cl-lib)
 (require 'seq)
 (require 'glof)
+(require 'glof-thread)
 
 (require 'mesh-core "lib/mesh-core")
 
@@ -20,13 +21,13 @@
      (seq-map
       (lambda (session)
         (if (cl-equalp session current-session)
-            (thread-first session
-              (glof:get :name)
-              (propertize 'face `( :foreground ,(face-foreground 'font-lock-type-face)
-                                               :background ,(face-background 'default))))
-          (thread-first session
-            (glof:get :name)
-            (propertize 'face 'font-lock-comment-face))))
+            (glof:-> session
+                     :name
+                     (propertize 'face `( :foreground ,(face-foreground 'font-lock-type-face)
+                                                      :background ,(face-background 'default))))
+          (glof:-> session
+                   :name
+                   (propertize 'face 'font-lock-comment-face))))
       current-session-list)
      " ")))
 

@@ -55,10 +55,8 @@
                                  new-session-name
                                  (glof:get new-state :sessions))))
           (switch-to-buffer
-           (thread-first (mesh:first (glof:get new-session :tabs))
-             (glof:get :panes)
-             mesh:first
-             (glof:get :buffer)))
+           (glof:-> new-session
+             :tabs mesh:first :panes mesh:first :buffer))
           (delete-other-windows)
           (glof:assoc new-state
                       :current-session new-session

@@ -51,10 +51,10 @@
                                                       :tabs new-current-tabs))))
           (delete-other-windows)
           (switch-to-buffer
-           (thread-first new-tab
-             (glof:get :panes)
+           (glof:-> new-tab
+             :panes
              mesh:first
-             (glof:get :buffer)))
+             :buffer))
           (cl-letf* ((new-tab (thread-first new-tab
                                 (glof:assoc :conf
                                             (current-window-configuration))))
@@ -71,8 +71,8 @@
 
 (cl-defun mesh:tab--command-split (state)
   (cl-letf* ((current-session (glof:get state :current-session))
-             (current-tab (thread-first current-session
-                            (glof:get :current-tab)))
+             (current-tab (glof:get current-session
+                                    :current-tab))
              (pane (glof:get current-tab :current-pane))
              (pane-last-index
               (seq-max (seq-map
@@ -114,8 +114,7 @@
 
 (cl-defun mesh:tab--command-vsplit (state)
   (cl-letf* ((current-session (glof:get state :current-session))
-             (current-tab (thread-first current-session
-                            (glof:get :current-tab)))
+             (current-tab (glof:get current-session :current-tab))
              (pane (glof:get current-tab :current-pane))
              (pane-last-index
               (seq-max (seq-map

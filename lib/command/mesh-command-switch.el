@@ -5,6 +5,7 @@
 (require 'cl-lib)
 (require 'subr-x)
 (require 'glof)
+(require 'glof-thread)
 
 (require 'mesh-core "lib/mesh-core")
 (require 'mesh-session "lib/mesh-session")
@@ -52,8 +53,9 @@
         (glof:assoc state
                     :inside-session-p t))
     (cl-letf* ((new-session
-                (thread-last (glof:get state :sessions)
-                  (mesh:session--new mesh:default-session-name)))
+                (glof:->> state
+                          :sessions
+                          (mesh:session--new mesh:default-session-name)))
                (tab (mesh:first (glof:get new-session :tabs)))
                (conf (glof:get tab :conf)))
       (cond
@@ -66,10 +68,10 @@
                      :inside-session-p t))
         (t
          (switch-to-buffer
-          (thread-first tab
-            (glof:get :panes)
-            mesh:first
-            (glof:get :buffer)))
+          (glof:-> tab
+                   :panes
+                   mesh:first
+                   :buffer))
          (delete-other-windows)
          (cl-letf* ((new-tab (thread-first tab
                                (glof:assoc :conf (current-window-configuration))))
