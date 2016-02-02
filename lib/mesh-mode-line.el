@@ -18,11 +18,11 @@
              (current-tab-name (glof:get current-tab :name))
              (current-tab-index (glof:get current-tab :index))
              (current-buffer-name (buffer-name (current-buffer)))
-             (current-pane-index (thread-first (seq-find
-                                      (lambda (pane) (cl-equalp current-buffer-name
-                                                           (buffer-name (glof:get pane :buffer))))
-                                      (glof:get current-tab :panes))
-                                   (glof:get :index)))
+             (current-pane-index (glof:get (seq-find
+                                            (lambda (pane) (cl-equalp current-buffer-name
+                                                                 (buffer-name (glof:get pane :buffer))))
+                                            (glof:get current-tab :panes))
+                                           :index))
              (last-command-name eshell-last-command-name)
              (directory-name (abbreviate-file-name (eshell/pwd))))
     (string-join
