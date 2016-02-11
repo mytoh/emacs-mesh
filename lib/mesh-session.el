@@ -13,7 +13,7 @@
 
 (cl-defun mesh:session--new (session-name sessions)
   (let ((found (seq-find (lambda (s) (cl-equalp (glof:get s :name)
-                                           session-name))
+                                                session-name))
                          sessions)))
     (if (not (seq-empty-p found))
         found
@@ -30,7 +30,7 @@
              (if (not (seq-empty-p
                        (seq-find
                         (lambda (session) (cl-equalp new-session-name
-                                                (glof:get session :name)))
+                                                     (glof:get session :name)))
                         (glof:get state :sessions))))
                  (seq-concatenate 'string new-session-name "*")
                new-session-name)))
@@ -68,59 +68,63 @@
              (next-session
               (mesh:find-next `[:session ,current-session ]
                            (glof:get state :sessions))))
-    (when next-session
-      (cl-letf* ((current-session-tabs (glof:get current-session :tabs))
-                 (current-session-tab (glof:get current-session :current-tab)))
-        (cl-letf ((new-session current-session))
-          (cl-letf* ((new-tab (thread-first current-session-tab
-                                (glof:assoc :conf (current-window-configuration))))
-                     (new-tabs (mesh:substitute-if-v new-tab
-                                                  (lambda (tab)
-                                                    (eq (glof:get tab :index)
-                                                        (glof:get current-session-tab
-                                                                  :index)))
-                                                  current-session-tabs)))
-            (cl-letf* ((new-state (glof:assoc state
-                                              :sessions
-                                              (mesh:tab--subst-session
-                                               state
-                                               (thread-first current-session
-                                                 (glof:assoc :current-tab new-tab
-                                                             :tabs new-tabs))
-                                               current-session)))
-                       (next-session-conf
-                        (glof:get-in next-session [:current-tab :conf])))
-              (set-window-configuration next-session-conf)
-              (glof:assoc new-state
-                          :current-session next-session))))))))
+    (pcase next-session
+      (`nil state)
+      (_
+       (cl-letf* ((current-session-tabs (glof:get current-session :tabs))
+                  (current-session-tab (glof:get current-session :current-tab)))
+         (cl-letf ((new-session current-session))
+           (cl-letf* ((new-tab (thread-first current-session-tab
+                                 (glof:assoc :conf (current-window-configuration))))
+                      (new-tabs (mesh:substitute-if-v new-tab
+                                                   (lambda (tab)
+                                                     (eq (glof:get tab :index)
+                                                         (glof:get current-session-tab
+                                                                   :index)))
+                                                   current-session-tabs)))
+             (cl-letf* ((new-state (glof:assoc state
+                                               :sessions
+                                               (mesh:tab--subst-session
+                                                state
+                                                (thread-first current-session
+                                                  (glof:assoc :current-tab new-tab
+                                                              :tabs new-tabs))
+                                                current-session)))
+                        (next-session-conf
+                         (glof:get-in next-session [:current-tab :conf])))
+               (set-window-configuration next-session-conf)
+               (glof:assoc new-state
+                           :current-session next-session)))))))))
 
 (cl-defun mesh:session--command-prev (state)
   (cl-letf* ((current-session (glof:get state :current-session))
              (prev-session
               (mesh:find-prev `[:session ,current-session]
                            (glof:get state :sessions))))
-    (when prev-session
-      (cl-letf* ((current-session-tabs (glof:get current-session :tabs))
-                 (current-session-tab (glof:get current-session :current-tab)))
-        (cl-letf* ((new-tab (thread-first current-session-tab
-                              (glof:assoc :conf (current-window-configuration))))
-                   (new-tabs (mesh:substitute-if-v new-tab
-                                                (lambda (tab)
-                                                  (eq (glof:get tab :index)
-                                                      (glof:get current-session-tab :index)))
-                                                current-session-tabs)))
-          (cl-letf* ((new-state (glof:assoc state
-                                            :sessions
-                                            (mesh:tab--subst-session state
-                                                                  (thread-first current-session
-                                                                    (glof:assoc :current-tab new-tab
-                                                                                :tabs new-tabs))
-                                                                  current-session)))
-                     (prev-session-conf
-                      (glof:get-in prev-session [:current-tab :conf])))
-            (set-window-configuration prev-session-conf)
-            (glof:assoc new-state
-                        :current-session prev-session)))))))
+    (pcase prev-session
+      (`nil state)
+      (_
+       (cl-letf* ((current-session-tabs (glof:get current-session :tabs))
+                  (current-session-tab (glof:get current-session :current-tab)))
+         (cl-letf* ((new-tab (thread-first current-session-tab
+                               (glof:assoc :conf (current-window-configuration))))
+                    (new-tabs (mesh:substitute-if-v new-tab
+                                                 (lambda (tab)
+                                                   (eq (glof:get tab :index)
+                                                       (glof:get current-session-tab :index)))
+                                                 current-session-tabs)))
+           (cl-letf* ((new-state (glof:assoc state
+                                             :sessions
+                                             (mesh:tab--subst-session state
+                                                                   (thread-first current-session
+                                                                     (glof:assoc :current-tab new-tab
+                                                                                 :tabs new-tabs))
+                                                                   current-session)))
+                      (prev-session-conf
+                       (glof:get-in prev-session [:current-tab :conf])))
+             (set-window-configuration prev-session-conf)
+             (glof:assoc new-state
+                         :current-session prev-session))))))))
 
 (cl-defun mesh:session--command-kill (state)
   (cl-letf* ((current-session (glof:get state :current-session))

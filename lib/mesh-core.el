@@ -90,6 +90,7 @@
                                      (cl-equalp (glof:get a :name)
                                                 (glof:get b :name))))))
     (pcase (1- (seq-length sessions))
+      (0 nil)
       ((let `nil current-session-pos) nil)
       ((pred (eq current-session-pos))
        (mesh:first sessions))
