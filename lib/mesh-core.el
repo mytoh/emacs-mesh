@@ -5,6 +5,7 @@
 (require 'seq)
 (require 'glof)
 (require 'tupper)
+(require 'colle)
 (require 'mesh-class "lib/mesh-class")
 
 (defcustom mesh:default-tab-name "eshell"
@@ -44,7 +45,7 @@
     (`[:session ,session] (mesh:find-prev-session session lst))))
 
 (cl-defun mesh:find-next-pane (current-pane panes)
-  (cl-letf* ((indices (seq-sort #'< (seq-map (lambda (p) (glof:get p :index)) panes)))
+  (cl-letf* ((indices (seq-sort #'< (colle:map (lambda (p) (glof:get p :index)) panes)))
              (max-index (seq-max indices))
              (mix-index (seq-min indices))
              (current-index (glof:get current-pane :index))
@@ -65,7 +66,7 @@
         panes)))))
 
 (cl-defun mesh:find-next-tab (current-tab tabs)
-  (cl-letf* ((indices (seq-sort #'< (seq-map (lambda (tab) (glof:get tab :index)) tabs)))
+  (cl-letf* ((indices (seq-sort #'< (colle:map (lambda (tab) (glof:get tab :index)) tabs)))
              (max-index (seq-max indices))
              (min-index (seq-min indices))
              (current-index (glof:get current-tab :index))
@@ -131,7 +132,7 @@
 
 
 (cl-defun mesh:find-prev-tab (current-tab tabs)
-  (cl-letf* ((indices (seq-sort #'< (seq-map (lambda (p) (glof:get p :index)) tabs)))
+  (cl-letf* ((indices (seq-sort #'< (colle:map (lambda (p) (glof:get p :index)) tabs)))
              (min-index (seq-min indices))
              (max-index (seq-max indices))
              (current-index (glof:get current-tab :index))
@@ -166,7 +167,7 @@
 
 
 (cl-defun mesh:find-missing-index (fn lst)
-  (cl-letf ((indices (seq-sort #'< (seq-map fn lst))))
+  (cl-letf ((indices (seq-sort #'< (colle:map fn lst))))
     (seq-difference (number-sequence 0 (seq-max indices))
                     indices)))
 
@@ -195,7 +196,7 @@
 ;;              (_ '(0)))))))
 
 (cl-defun mesh:find-last (lst)
-  (cl-letf* ((indices (seq-map (lambda (thing) (glof:get thing :index)) lst))
+  (cl-letf* ((indices (colle:map (lambda (thing) (glof:get thing :index)) lst))
              (max-index (seq-max indices)))
     max-index))
 
@@ -228,7 +229,7 @@
   (seq-into (seq-remove f seq) 'vector))
 
 (cl-defun mesh:substitute-if (new f x)
-  (seq-map
+  (colle:map
    (lambda (e)
      (if (funcall f e)
          new
@@ -236,13 +237,12 @@
    x))
 
 (cl-defun mesh:substitute-if-v (new f x)
-  (seq-into (seq-map
-             (lambda (e)
-               (if (funcall f e)
-                   new
-                 e))
-             x)
-            'vector))
+  (colle:map
+   (lambda (e)
+     (if (funcall f e)
+         new
+       e))
+   x))
 
 (cl-defun mesh:last (seq)
   (seq-elt seq (1- (seq-length seq))))
