@@ -10,10 +10,10 @@
 (require 'mesh-session "lib/mesh-session")
 
 ;;;###autoload
-(cl-defun mesh:new-session (new-session-name)
+(cl-defun mesh:new-session (newsessionname)
   (interactive "sSession name: ")
   (mesh::update #'mesh:session--command-create
-             new-session-name))
+              newsessionname))
 
 ;;;###autoload
 (cl-defun mesh:next-session ()

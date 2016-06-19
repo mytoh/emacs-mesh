@@ -50,23 +50,23 @@
     (when (not (seq-empty-p nextpane))
       (cl-letf ((nextpanebuf (glof:get nextpane :buffer)))
         (switch-to-buffer-other-window nextpanebuf)
-        (cl-letf* ((new-session cursession))
-          (cl-letf* ((new-tab (thread-first curtab 
-                                (glof:assoc :current-pane nextpane
-                                            :conf (current-window-configuration))))
-                     (new-tabs (mesh:substitute-if-v new-tab
-                                                   (lambda (tab)
-                                                     (eq (glof:get tab :index)
-                                                         (glof:get curtab :index)))
-                                                   (glof:get cursession :tabs))))
-            (cl-letf ((new-session (thread-first cursession
-                                     (glof:assoc :tabs new-tabs
-                                                 :current-tab new-tab))))
+        (cl-letf* ((newsession cursession))
+          (cl-letf* ((newtab (thread-first curtab 
+                               (glof:assoc :current-pane nextpane
+                                           :conf (current-window-configuration))))
+                     (newtabs (mesh:substitute-if-v newtab
+                                                  (lambda (tab)
+                                                    (eq (glof:get tab :index)
+                                                        (glof:get curtab :index)))
+                                                  (glof:get cursession :tabs))))
+            (cl-letf ((newsession (thread-first cursession
+                                    (glof:assoc :tabs newtabs
+                                                :current-tab newtab))))
               (glof:assoc state
-                          :current-session new-session
+                          :current-session newsession
                           :sessions
                           (mesh:tab--subst-session state
-                                                 new-session cursession)))))))))
+                                                 newsession cursession)))))))))
 
 (cl-defun mesh:pane--command-kill (state)
   (cl-letf* ((oldsession (glof:get state :current-session))
