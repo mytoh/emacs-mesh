@@ -169,7 +169,7 @@
       (cl-letf* ((newcursession
                   (thread-first cursession
                     mesh:tab--update-tabs
-                    (mesh:tab--update-curtab nexttab))))
+                    (mesh:tab--update-current-tab nexttab))))
         (set-window-configuration (glof:get nexttab :conf))
         (glof:assoc state
                     :current-session newcursession
@@ -186,7 +186,7 @@
       (cl-letf* ((newcursession
                   (thread-first cursession
                     mesh:tab--update-tabs
-                    (mesh:tab--update-curtab prevtab))))
+                    (mesh:tab--update-current-tab prevtab))))
         (set-window-configuration (glof:get prevtab :conf))
         (glof:assoc state
                     :current-session new-cursession
