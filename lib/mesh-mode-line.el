@@ -13,30 +13,30 @@
   "mode line for mesh")
 
 (cl-defun mesh:mode-line (state)
-  (cl-letf* ((current-session (glof:get state :current-session))
-             (current-tab (glof:get current-session :current-tab))
-             (current-tab-name (glof:get current-tab :name))
-             (current-tab-index (glof:get current-tab :index))
-             (current-buffer-name (buffer-name (current-buffer)))
-             (current-pane-index (glof:get (seq-find
-                                            (lambda (pane) (cl-equalp current-buffer-name
-                                                                 (buffer-name (glof:get pane :buffer))))
-                                            (glof:get current-tab :panes))
-                                           :index))
+  (cl-letf* ((cursession (glof:get state :current-session))
+             (curtab (glof:get cursession :current-tab))
+             (curtabname (glof:get curtab :name))
+             (curtabindex (glof:get curtab :index))
+             (curbufname (buffer-name (current-buffer)))
+             (curpaneindex (glof:get (seq-find
+                                      (lambda (pane) (cl-equalp curbufname
+                                                           (buffer-name (glof:get pane :buffer))))
+                                      (glof:get curtab :panes))
+                                     :index))
              (last-command-name eshell-last-command-name)
              (directory-name (abbreviate-file-name (eshell/pwd))))
     (string-join
      (list
       (seq-concatenate 'string
                        (propertize
-                        current-tab-name
+                        curtabname
                         'face 'font-lock-doc-face)
                        "."
                        (propertize
-                        (number-to-string current-tab-index)
+                        (number-to-string curtabindex)
                         'face 'font-lock-doc-face))
       (propertize
-       (number-to-string current-pane-index)
+       (number-to-string curpaneindex)
        'face 'font-lock-keyword-face)
       (propertize
        last-command-name
