@@ -30,7 +30,7 @@
              (if (not (seq-empty-p
                        (seq-find
                         (lambda (session) (cl-equalp newsessionname
-                                                     (glof:get session :name)))
+                                                (glof:get session :name)))
                         (glof:get state :sessions))))
                  (seq-concatenate 'string newsessionname "*")
                newsessionname)))
@@ -73,7 +73,7 @@
       (_
        (cl-letf* ((cursessiontabs (glof:get cursession :tabs))
                   (cursessiontab (glof:get cursession :current-tab)))
-         (cl-letf ((new-session current-session))
+         (cl-letf ((newsession cursession))
            (cl-letf* ((newtab (thread-first cursessiontab
                                 (glof:assoc :conf (current-window-configuration))))
                       (newtabs (mesh:substitute-if-v newtab
