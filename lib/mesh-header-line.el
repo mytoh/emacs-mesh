@@ -15,20 +15,20 @@
   "header line for mesh")
 
 (cl-defun mesh:header-line (state)
-  (cl-letf* ((current-session (glof:get state :current-session))
-             (current-session-list (glof:get state :sessions)))
+  (cl-letf* ((cursession (glof:get state :current-session))
+             (cursessions (glof:get state :sessions)))
     (string-join
      (seq-map
       (lambda (session)
-        (if (cl-equalp session current-session)
+        (if (cl-equalp session cursession)
             (glof:-> session
-                     :name
-                     (propertize 'face `( :foreground ,(face-foreground 'font-lock-type-face)
-                                                      :background ,(face-background 'default))))
+              :name
+              (propertize 'face `( :foreground ,(face-foreground 'font-lock-type-face)
+                                               :background ,(face-background 'default))))
           (glof:-> session
-                   :name
-                   (propertize 'face 'font-lock-comment-face))))
-      current-session-list)
+            :name
+            (propertize 'face 'font-lock-comment-face))))
+      cursessions)
      " ")))
 
 (provide 'mesh-header-line)
