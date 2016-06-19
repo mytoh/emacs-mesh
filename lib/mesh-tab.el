@@ -189,7 +189,7 @@
                     (mesh:tab--update-current-tab prevtab))))
         (set-window-configuration (glof:get prevtab :conf))
         (glof:assoc state
-                    :current-session new-cursession
+                    :current-session newcursession
                     :sessions
                     (mesh:tab--subst-session state
                                            newcursession cursession))))))
