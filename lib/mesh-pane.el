@@ -9,97 +9,95 @@
 (require 'mesh-mode-line "lib/mesh-mode-line")
 (require 'mesh-header-line "lib/mesh-header-line")
 
-(cl-defun mesh:pane--new (session-name tab-name tab-index)
+(cl-defun mesh:pane--new (sname tname tindex)
   (cl-letf* ((buffer (mesh:pane--get-buffer-create
-                      session-name tab-name tab-index 0)))
+                      sname tname tindex 0)))
     (mesh:pane--make-buffer-eshell-mode buffer)
     (mesh:pane--set-mode-line buffer)
     (mesh:pane--set-header-line buffer)
     (mesh:pane--make-pane
-     session-name tab-name 0 buffer)))
+     sname tname 0 buffer)))
 
-(cl-defun mesh:pane--create (state &optional (pane-index 0))
-  (cl-letf* ((current-session (glof:get state :current-session))
-             (session-name (glof:get current-session :name))
-             (current-tab (glof:get current-session :current-tab))
-             (tab-name (glof:get current-tab :name))
-             (tab-index (glof:get current-tab :index))
+(cl-defun mesh:pane--create (state &optional (pindex 0))
+  (cl-letf* ((cursession (glof:get state :current-session))
+             (sname (glof:get cursession :name))
+             (curtab (glof:get cursession :current-tab))
+             (tname (glof:get curtab :name))
+             (tindex (glof:get curtab :index))
              (buffer (mesh:pane--get-buffer-create
-                      session-name tab-name tab-index pane-index)))
+                      sname tname tindex pindex)))
     (mesh:pane--make-buffer-eshell-mode buffer)
     (mesh:pane--set-mode-line buffer)
     (mesh:pane--set-header-line buffer)
     (mesh:pane--make-pane
-     session-name tab-name pane-index buffer)))
+     sname tname pindex buffer)))
 
 (cl-defun mesh:pane--make-pane
-    (session-name tab-name pane-index buffer)
+    (sname tname pindex buffer)
   (glof:assoc mesh:<pane>
-              :session-name session-name
-              :tab-name tab-name
-              :index pane-index
+              :sname sname
+              :tname tname
+              :index pindex
               :buffer buffer))
 
 (cl-defun mesh:pane--command-next (state)
-  (cl-letf* ((current-session (glof:get state :current-session))
-             (current-tab (glof:get current-session :current-tab))
-             (current-pane (glof:get current-tab :current-pane))
-             (next-pane
-              (mesh:find-next `[:pane ,current-pane]
-                           (glof:get current-tab :panes))))
-    (when (not (seq-empty-p next-pane))
-      (cl-letf ((next-pane-buffer (glof:get next-pane :buffer)))
-        (switch-to-buffer-other-window next-pane-buffer)
-        (cl-letf* ((new-session current-session))
-          (cl-letf* ((new-tab (thread-first current-tab
-                                (glof:assoc :current-pane next-pane
+  (cl-letf* ((cursession (glof:get state :current-session))
+             (curtab (glof:get cursession :current-tab))
+             (curpane (glof:get curtab :current-pane))
+             (nextpane
+              (mesh:find-next `[:pane ,curpane]
+                            (glof:get curtab :panes))))
+    (when (not (seq-empty-p nextpane))
+      (cl-letf ((nextpanebuf (glof:get nextpane :buffer)))
+        (switch-to-buffer-other-window nextpanebuf)
+        (cl-letf* ((new-session cursession))
+          (cl-letf* ((new-tab (thread-first curtab 
+                                (glof:assoc :current-pane nextpane
                                             :conf (current-window-configuration))))
                      (new-tabs (mesh:substitute-if-v new-tab
-                                                  (lambda (tab)
-                                                    (eq (glof:get tab :index)
-                                                        (glof:get current-tab :index)))
-                                                  (glof:get current-session :tabs))))
-            (cl-letf ((new-session (thread-first current-session
+                                                   (lambda (tab)
+                                                     (eq (glof:get tab :index)
+                                                         (glof:get curtab :index)))
+                                                   (glof:get cursession :tabs))))
+            (cl-letf ((new-session (thread-first cursession
                                      (glof:assoc :tabs new-tabs
                                                  :current-tab new-tab))))
               (glof:assoc state
                           :current-session new-session
                           :sessions
                           (mesh:tab--subst-session state
-                                                new-session current-session)))))))))
+                                                 new-session cursession)))))))))
 
 (cl-defun mesh:pane--command-kill (state)
-  (cl-letf* ((old-session (glof:get state :current-session))
-             (old-tab (glof:get old-session :current-tab))
-             (old-tabs (glof:get old-session :tabs))
-             (old-pane (glof:get old-tab :current-pane))
-             (old-panes (glof:get old-tab :panes))
-             (next-pane (mesh:find-next `[:pane ,old-pane]
-                                     old-panes))
-             (next-tab (mesh:find-next `[:tab ,old-tab]
-                                    (glof:get old-session :tabs))))
-    (pcase (seq-length old-panes)
+  (cl-letf* ((oldsession (glof:get state :current-session))
+             (oldtab (glof:get oldsession :current-tab))
+             (oldtabs (glof:get oldsession :tabs))
+             (oldpane (glof:get oldtab :current-pane))
+             (oldpanes (glof:get oldtab :panes))
+             (nextpane (mesh:find-next `[:pane ,oldpane]
+                                     oldpanes))
+             (nexttab (mesh:find-next `[:tab ,oldtab]
+                                    (glof:get oldsession :tabs))))
+    (pcase (seq-length oldpanes)
       (1
-       (cl-letf* ((new-tabs (mesh:removev (lambda (tab)
-                                         (eq (glof:get tab :index)
-                                             (glof:get old-tab :index)))
-                                       old-tabs))
-                  (new-session (thread-first old-session
-                                 (glof:assoc :tabs new-tabs
-                                             :current-tab next-tab))))
-
-         
-         (mesh:tab--kill-panes old-tab)
-         (set-window-configuration (glof:get next-tab :conf))
+       (cl-letf* ((newtabs (mesh:removev (lambda (tb)
+                                         (eq (glof:get tb :index)
+                                             (glof:get oldtab :index)))
+                                       oldtabs))
+                  (newsession (thread-first oldsession
+                                (glof:assoc :tabs newtabs
+                                            :current-tab nexttab))))
+         (mesh:tab--kill-panes oldtab)
+         (set-window-configuration (glof:get nexttab :conf))
          (glof:assoc state
-                     :current-session new-session
+                     :current-session newsession
                      :sessions
                      (mesh:tab--subst-session state
-                                           new-session old-session))))
+                                            newsession oldsession))))
       (_
        (setq mesh:*state* (mesh:pane--command-next mesh:*state*))
        (setq mesh:*state* (mesh:pane--kill mesh:*state*
-                                     old-session old-tab old-pane next-pane)))
+                                       oldsession oldtab oldpane nextpane)))
       
       ;; (t
       ;;  ;; TODO kill session
@@ -108,39 +106,39 @@
 
 (cl-defun mesh:pane--kill-buffer (pane)
   (cl-letf* ((buffer (glof:get pane :buffer))
-             (window-to-kill (get-buffer-window buffer)))
+             (windowtokill (get-buffer-window buffer)))
     (with-current-buffer buffer
       (kill-buffer buffer)
-      (delete-window window-to-kill))))
+      (delete-window windowtokill))))
 
-(cl-defun mesh:pane--kill (state session tab pane next-pane)
-  (cl-letf* ((old-session session)
-             (old-tab tab)
-             (old-pane pane))
-    (mesh:pane--kill-buffer old-pane)
-    (cl-letf* ((new-tab (thread-first old-tab
-                          (glof:assoc
-                           :conf (current-window-configuration)
-                           :current-pane next-pane
-                           :panes
-                           (mesh:removev
-                            (lambda (pane)
-                              (eq (glof:get pane :index)
-                                  (glof:get old-pane :index)))
-                            (glof:get old-tab :panes)))))
-               (new-tabs (mesh:substitute-if-v new-tab
+(cl-defun mesh:pane--kill (state session tab pane nextpane)
+  (cl-letf* ((oldsession session)
+             (oldtab tab)
+             (oldpane pane))
+    (mesh:pane--kill-buffer oldpane)
+    (cl-letf* ((newtab (thread-first oldtab
+                         (glof:assoc
+                          :conf (current-window-configuration)
+                          :current-pane nextpane
+                          :panes
+                          (mesh:removev
+                           (lambda (pane)
+                             (eq (glof:get pane :index)
+                                 (glof:get oldpane :index)))
+                           (glof:get oldtab :panes)))))
+               (newtabs (mesh:substitute-if-v newtab
                                             (lambda (tab)
                                               (eq (glof:get tab :index)
-                                                  (glof:get old-tab :index)))
-                                            (glof:get old-session :tabs))))
-      (cl-letf ((new-session (thread-first old-session
-                               (glof:assoc :tabs new-tabs
-                                           :current-tab new-tab))))
+                                                  (glof:get oldtab :index)))
+                                            (glof:get oldsession :tabs))))
+      (cl-letf ((newsession (thread-first oldsession
+                              (glof:assoc :tabs newtabs
+                                          :current-tab newtab))))
         (glof:assoc state
-                    :current-session new-session
+                    :current-session newsession
                     :sessions
                     (mesh:tab--subst-session state
-                                          new-session old-session))))))
+                                           newsession oldsession))))))
 
 (cl-defun mesh:pane--make-buffer-eshell-mode (buffer)
   (with-current-buffer buffer
@@ -159,13 +157,13 @@
           mesh:header-line-format)))
 
 (cl-defun mesh:pane--get-buffer-create
-    (session-name tab-name tab-index pane-index)
+    (sname tname tindex pindex)
   (get-buffer-create
    (format "*%s:%s.%s:%s*"
-           session-name
-           tab-name
-           tab-index
-           pane-index)))
+           sname
+           tname
+           tindex
+           pindex)))
 
 
 (provide 'mesh-pane)
