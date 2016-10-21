@@ -120,7 +120,7 @@
                (next (seq-find (lambda (e) (cl-equalp e target))  lst)))
       (if next
           next
-        (mesh:find-next-index-rec index maxindex (mesh:rest lst))))))
+        (mesh:find-next-index-rec index maxindex (colle:rest lst))))))
 
 (cl-defun mesh:find-next-index (index maxindex lst)
   (if (eq index maxindex)
@@ -163,7 +163,7 @@
                (prev (seq-find (lambda (e) (cl-equalp e target)) lst)))
       (if prev
           prev
-        (mesh:find-prev-index-rec index minindex (mesh:rest lst))))))
+        (mesh:find-prev-index-rec index minindex (colle:rest lst))))))
 
 
 (cl-defun mesh:find-missing-index (fn lst)
@@ -205,9 +205,6 @@
 
 (cl-defun mesh:second (x)
   (seq-elt x 1))
-
-(cl-defun mesh:rest (x)
-  (seq-drop x 1))
 
 (cl-defun mesh:conj (a b)
   (pcase (list (type-of a) (type-of b))
