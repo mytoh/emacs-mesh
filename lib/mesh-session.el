@@ -56,7 +56,7 @@
                                 (glof:get newstate :sessions))))
           (switch-to-buffer
            (glof:-> newsession
-             :tabs mesh:first :panes mesh:first :buffer))
+             :tabs colle:first :panes colle:first :buffer))
           (delete-other-windows)
           (glof:assoc newstate
                       :current-session newsession

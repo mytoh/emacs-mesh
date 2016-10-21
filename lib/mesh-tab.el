@@ -33,7 +33,7 @@
                                        (glof:get cursession :tabs)))
                (newtabindex
                 (if missingtabincides
-                    (mesh:first missingtabincides)
+                    (colle:first missingtabincides)
                   (1+  lasttabindex))))
       (cl-letf* ((newtab (mesh:tab--new newtabname cursessionname
                                       newtabindex))
@@ -53,7 +53,7 @@
           (switch-to-buffer
            (glof:-> newtab
              :panes
-             mesh:first
+             colle:first
              :buffer))
           (cl-letf* ((newtab (thread-first newtab
                                (glof:assoc :conf
@@ -84,7 +84,7 @@
     (cl-letf* ((newpane (mesh:pane--create
                          state
                          (if panemissingindices
-                             (mesh:first panemissingindices)
+                             (colle:first panemissingindices)
                            (1+  panelastindex)))))
       (cl-letf ((newwindow (split-window nil nil 'below)))
         (set-window-buffer newwindow (glof:get newpane :buffer))
@@ -126,7 +126,7 @@
     (cl-letf* ((newpane (mesh:pane--create
                          state
                          (if panemissingindices
-                             (mesh:first panemissingindices)
+                             (colle:first panemissingindices)
                            (1+  panelastindex)))))
       (cl-letf ((newwindow (split-window nil nil 'right)))
         (set-window-buffer newwindow (glof:get newpane :buffer))

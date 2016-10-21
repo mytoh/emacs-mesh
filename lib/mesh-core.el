@@ -94,7 +94,7 @@
       (0 nil)
       ((let `nil cursessionpos) nil)
       ((pred (eq cursessionpos))
-       (mesh:first sessions))
+       (colle:first sessions))
       ((pred (< cursessionpos))
        (seq-elt sessions (1+ cursessionpos)))
       (_ nil))))
@@ -199,9 +199,6 @@
   (cl-letf* ((indices (colle:map (lambda (thing) (glof:get thing :index)) lst))
              (maxindex (seq-max indices)))
     maxindex))
-
-(cl-defun mesh:first (x)
-  (seq-elt x 0))
 
 (cl-defun mesh:second (x)
   (seq-elt x 1))

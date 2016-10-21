@@ -56,38 +56,38 @@
                 (glof:->> state
                   :sessions
                   (mesh:session--new mesh:default-session-name)))
-               (newtab (mesh:first (glof:get newsession :tabs)))
+               (newtab (colle:first (glof:get newsession :tabs)))
                (conf (glof:get newtab :conf)))
       (cond
-        (conf
-         (set-window-configuration conf)
-         (glof:assoc state
-                     :current-session newsession
-                     :sessions (mesh:conj newsession
-                                        (glof:get state :sessions))
-                     :inside-session-p t))
-        (t
-         (switch-to-buffer
-          (glof:-> newtab 
-            :panes
-            mesh:first
-            :buffer))
-         (delete-other-windows)
-         (cl-letf* ((newtab (thread-first newtab 
-                              (glof:assoc :conf (current-window-configuration))))
-                    (newtabs (mesh:substitute-if-v newtab
-                                                 (lambda (tb) (eq (glof:get tb :index)
-                                                             (glof:get newtab :index)))
-                                                 (glof:get newsession :tabs)))
-                    (newsession (thread-first newsession
-                                  (glof:assoc
-                                   :current-tab newtab
-                                   :tabs newtabs))))
-           (glof:assoc state
-                       :current-session newsession
-                       :sessions (mesh:conj newsession
-                                          (glof:get state :sessions))
-                       :inside-session-p t)))))))
+       (conf
+        (set-window-configuration conf)
+        (glof:assoc state
+                    :current-session newsession
+                    :sessions (mesh:conj newsession
+                                       (glof:get state :sessions))
+                    :inside-session-p t))
+       (t
+        (switch-to-buffer
+         (glof:-> newtab 
+           :panes
+           colle:first
+           :buffer))
+        (delete-other-windows)
+        (cl-letf* ((newtab (thread-first newtab 
+                             (glof:assoc :conf (current-window-configuration))))
+                   (newtabs (mesh:substitute-if-v newtab
+                                                (lambda (tb) (eq (glof:get tb :index)
+                                                            (glof:get newtab :index)))
+                                                (glof:get newsession :tabs)))
+                   (newsession (thread-first newsession
+                                 (glof:assoc
+                                  :current-tab newtab
+                                  :tabs newtabs))))
+          (glof:assoc state
+                      :current-session newsession
+                      :sessions (mesh:conj newsession
+                                         (glof:get state :sessions))
+                      :inside-session-p t)))))))
 
 (provide 'mesh-command-switch)
 
