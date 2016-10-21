@@ -25,7 +25,7 @@
               :sessions []
               :inside-session-p nil))
 
-(cl-defmacro mesh:defcommand (name &rest body)
+(cl-defmacro mesh:defcommand (name . body)
   (declare (debug t)
            (indent 1))
   `(cl-defun ,name ()
@@ -212,18 +212,18 @@
 (cl-defun mesh:conj (a b)
   (pcase (list (type-of a) (type-of b))
     (`(cons vector)
-      (seq-concatenate 'vector
-                       (vector a) b))
+     (seq-concatenate 'vector
+                      (vector a) b))
     (`(vector vector)
-      (seq-concatenate 'vector
-                       (vector a) b))
+     (seq-concatenate 'vector
+                      (vector a) b))
     (`(,_ cons)
-      (cons a b))
+     (cons a b))
     (`(,_ nil)
-      (cons a nil))
+     (cons a nil))
     (`(,_ vector)
-      (seq-concatenate 'vector
-                       (vector a) b))))
+     (seq-concatenate 'vector
+                      (vector a) b))))
 
 (cl-defun mesh:removev (f seq)
   (seq-into (seq-remove f seq) 'vector))
@@ -247,7 +247,7 @@
 (cl-defun mesh:last (seq)
   (seq-elt seq (1- (seq-length seq))))
 
-(cl-defun mesh::update (f &rest args)
+(cl-defun mesh::update (f . args)
   (apply #'tupper:update! 'mesh:*state* f args))
 
 (provide 'mesh-core)
