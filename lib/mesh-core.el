@@ -200,9 +200,6 @@
              (maxindex (seq-max indices)))
     maxindex))
 
-(cl-defun mesh:second (x)
-  (seq-elt x 1))
-
 (cl-defun mesh:conj (a b)
   (pcase (list (type-of a) (type-of b))
     (`(cons vector)
