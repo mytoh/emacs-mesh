@@ -5,20 +5,20 @@
 (require 'cl-lib)
 (require 'glof)
 
-(defvar mesh:<session>
+(defconst mesh:<session>
   (glof:plist
    :name ""
    :current-tab nil
    :tabs []))
 
-(defvar mesh:<pane>
+(defconst mesh:<pane>
   (glof:plist
    :session-name ""
    :tab-name ""
    :index 0
    :buffer nil))
 
-(defvar mesh:<tab>
+(defconst mesh:<tab>
   (glof:plist
    :name ""
    :session-name ""
