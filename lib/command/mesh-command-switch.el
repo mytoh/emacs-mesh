@@ -35,17 +35,17 @@
         (jump-to-register mesh:*window-configuration-name*)
         (glof:assoc state
                     :sessions
-                    (mesh:tab--subst-session
-                     state
-                     (thread-first newsession
-                       (glof:assoc :current-tab newtab
-                                   :tabs newtabs))
-                     oldsession)
-                    :inside-session-p nil)))))
+          (mesh:tab--subst-session
+           state
+           (thread-first newsession
+             (glof:assoc :current-tab newtab
+                         :tabs newtabs))
+           oldsession)
+          :inside-session-p nil)))))
 
 (cl-defun mesh:command--switch-outside (state)
   (window-configuration-to-register mesh:*window-configuration-name*)
-  (if (not (seq-empty-p (glof:get state :sessions)))
+  (if (not (colle:empty-p (glof:get state :sessions)))
       (cl-letf* ((session (glof:get state :current-session))
                  (conf (glof:get-in session
                                     [:current-tab :conf])))
@@ -63,7 +63,7 @@
         (set-window-configuration conf)
         (glof:assoc state
                     :current-session newsession
-                    :sessions (mesh:conj newsession
+                    :sessions (colle:conj newsession
                                        (glof:get state :sessions))
                     :inside-session-p t))
        (t
@@ -85,7 +85,7 @@
                                   :tabs newtabs))))
           (glof:assoc state
                       :current-session newsession
-                      :sessions (mesh:conj newsession
+                      :sessions (colle:conj newsession
                                          (glof:get state :sessions))
                       :inside-session-p t)))))))
 

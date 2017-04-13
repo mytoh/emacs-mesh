@@ -33,6 +33,13 @@
      (when (glof:get mesh:*state* :inside-session-p)
        ,@body)))
 
+
+(cl-defun mesh:get-indices (things)
+  (colle:map (lambda (x) (glof:get x :index)) things))
+
+(cl-defun mesh:sort-numbers (numbers)
+  (seq-sort #'< numbers))
+
 (cl-defun mesh:find-next (thing lst)
   (pcase thing
     (`[:pane ,pane] (mesh:find-next-pane pane lst))
@@ -45,7 +52,7 @@
     (`[:session ,session] (mesh:find-prev-session session lst))))
 
 (cl-defun mesh:find-next-pane (curpane panes)
-  (cl-letf* ((indices (seq-sort #'< (colle:map (lambda (p) (glof:get p :index)) panes)))
+  (cl-letf* ((indices (mesh:sort-numbers (mesh:get-indices panes)))
              (maxindex (seq-max indices))
              (minindex (seq-min indices))
              (curindex (glof:get curpane :index))
@@ -66,7 +73,7 @@
         panes)))))
 
 (cl-defun mesh:find-next-tab (curtab tabs)
-  (cl-letf* ((indices (seq-sort #'< (colle:map (lambda (tab) (glof:get tab :index)) tabs)))
+  (cl-letf* ((indices (mesh:sort-numbers (mesh:get-indices tabs)))
              (maxindex (seq-max indices))
              (minindex (seq-min indices))
              (curindex (glof:get curtab :index))
@@ -113,8 +120,8 @@
       (_ (seq-elt sessions (1- cursessionpos))))))
 
 (cl-defun mesh:find-next-index-rec (index maxindex lst)
-  (if (or (seq-empty-p lst)
-         (eq index maxindex))
+  (if (or (colle:empty-p lst)
+          (eq index maxindex))
       nil
     (cl-letf* ((target (1+ index))
                (next (seq-find (lambda (e) (cl-equalp e target))  lst)))
@@ -131,8 +138,9 @@
         (mesh:find-next-index-rec (1+ index) maxindex lst)))))
 
 
+
 (cl-defun mesh:find-prev-tab (curtab tabs)
-  (cl-letf* ((indices (seq-sort #'< (colle:map (lambda (p) (glof:get p :index)) tabs)))
+  (cl-letf* ((indices (mesh:sort-numbers (mesh:get-indices tabs)))
              (minindex (seq-min indices))
              (maxindex (seq-max indices))
              (curindex (glof:get curtab :index))
@@ -156,8 +164,8 @@
         (mesh:find-prev-index-rec (1- index) minindex lst)))))
 
 (cl-defun mesh:find-prev-index-rec (index minindex lst)
-  (if (or (seq-empty-p lst)
-         (eq index minindex))
+  (if (or (colle:empty-p lst)
+          (eq index minindex))
       nil
     (cl-letf* ((target (1- index))
                (prev (seq-find (lambda (e) (cl-equalp e target)) lst)))
@@ -167,7 +175,7 @@
 
 
 (cl-defun mesh:find-missing-index (fn lst)
-  (cl-letf ((indices (seq-sort #'< (colle:map fn lst))))
+  (cl-letf ((indices (mesh:sort-numbers (colle:map fn lst))))
     (seq-difference (number-sequence 0 (seq-max indices))
                     indices)))
 
@@ -196,23 +204,28 @@
 ;;              (_ '(0)))))))
 
 (cl-defun mesh:find-last (lst)
-  (cl-letf* ((indices (colle:map (lambda (thing) (glof:get thing :index)) lst))
+  (cl-letf* ((indices (mesh:get-indices lst))
              (maxindex (seq-max indices)))
     maxindex))
 
 (cl-defun mesh:conj (a b)
-  (pcase (list (type-of a) (type-of b))
-    (`(cons vector)
+  (pcase (list a b)
+    (`((pred consp)
+       (pred vectorp))
      (seq-concatenate 'vector
                       (vector a) b))
-    (`(vector vector)
+    (`((pred vectorp)
+       (pred vectorp))
      (seq-concatenate 'vector
                       (vector a) b))
-    (`(,_ cons)
+    (`(,_
+       (pred consp))
      (cons a b))
-    (`(,_ nil)
+    (`(,_
+       (pred null))
      (cons a nil))
-    (`(,_ vector)
+    (`(,_
+       (pred vectorp))
      (seq-concatenate 'vector
                       (vector a) b))))
 

@@ -57,17 +57,17 @@
              :buffer))
           (cl-letf* ((newtab (thread-first newtab
                                (glof:assoc :conf
-                                           (current-window-configuration))))
+                                 (current-window-configuration))))
                      (newsession
                       (thread-first newcursession
-                        (glof:assoc :tabs (mesh:conj newtab
+                        (glof:assoc :tabs (colle:conj newtab
                                                    (glof:get newcursession :tabs))
                                     :current-tab newtab))))
             (glof:assoc state
                         :current-session newsession
                         :sessions
-                        (mesh:tab--subst-session state
-                                               newsession cursession))))))))
+              (mesh:tab--subst-session state
+                                     newsession cursession))))))))
 
 (cl-defun mesh:tab--command-split (state)
   (cl-letf* ((cursession (glof:get state :current-session))
@@ -92,7 +92,7 @@
       (cl-letf* ((newtab (thread-first curtab
                            (glof:assoc
                             :current-pane newpane
-                            :panes (mesh:conj
+                            :panes (colle:conj
                                     newpane
                                     (glof:get curtab :panes))
                             :conf (current-window-configuration))))
@@ -109,8 +109,8 @@
           (glof:assoc state
                       :current-session newsession
                       :sessions
-                      (mesh:tab--subst-session state
-                                             newsession cursession)))))))
+            (mesh:tab--subst-session state
+                                   newsession cursession)))))))
 
 (cl-defun mesh:tab--command-vsplit (state)
   (cl-letf* ((cursession (glof:get state :current-session))
@@ -134,10 +134,10 @@
       (cl-letf* ((newtab (thread-first curtab
                            (glof:assoc :current-pane newpane
                                        :panes
-                                       (mesh:conj newpane
-                                                (glof:get curtab :panes))
-                                       :conf
-                                       (current-window-configuration))))
+                             (colle:conj newpane
+                                      (glof:get curtab :panes))
+                             :conf
+                             (current-window-configuration))))
                  (newtabs (mesh:substitute-if-v newtab
                                               (lambda (tab)
                                                 (eq (glof:get tab :index)
@@ -149,8 +149,8 @@
         (glof:assoc state
                     :current-session newsession
                     :sessions
-                    (mesh:tab--subst-session state
-                                           newsession cursession))))))
+          (mesh:tab--subst-session state
+                                 newsession cursession))))))
 
 (cl-defun mesh:tab--subst-session (state newsession oldsession)
   (mesh:substitute-if-v
@@ -174,8 +174,8 @@
         (glof:assoc state
                     :current-session newcursession
                     :sessions
-                    (mesh:tab--subst-session state
-                                           newcursession cursession))))))
+          (mesh:tab--subst-session state
+                                 newcursession cursession))))))
 
 (cl-defun mesh:tab--command-prev (state)
   (cl-letf* ((cursession (glof:get state :current-session))
@@ -191,8 +191,8 @@
         (glof:assoc state
                     :current-session newcursession
                     :sessions
-                    (mesh:tab--subst-session state
-                                           newcursession cursession))))))
+          (mesh:tab--subst-session state
+                                 newcursession cursession))))))
 
 (cl-defun mesh:tab--update-current-tab (cursession newtab)
   (glof:assoc cursession :current-tab newtab))
@@ -201,13 +201,13 @@
   (cl-letf ((curtab (glof:get session :current-tab)))
     (glof:update session
                  :tabs
-                 (lambda (tabs)
-                   (thread-first curtab
-                     (glof:assoc :conf (current-window-configuration))
-                     (mesh:substitute-if-v (lambda (tab)
-                                           (eq (glof:get tab :index)
-                                               (glof:get curtab :index)))
-                                         tabs))))))
+      (lambda (tabs)
+        (thread-first curtab
+          (glof:assoc :conf (current-window-configuration))
+          (mesh:substitute-if-v (lambda (tab)
+                                (eq (glof:get tab :index)
+                                    (glof:get curtab :index)))
+                              tabs))))))
 
 (cl-defun mesh:tab--command-kill (state)
   (cl-letf ((cursession (glof:get state :current-session)))
