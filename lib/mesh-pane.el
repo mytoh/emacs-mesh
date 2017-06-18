@@ -9,6 +9,15 @@
 (require 'mesh-mode-line "lib/mesh-mode-line")
 (require 'mesh-header-line "lib/mesh-header-line")
 
+
+(cl-defun mesh:protect-buffer (buffername)
+  (with-current-buffer buffername
+    (emacs-lock-mode 'kill)))
+
+(cl-defun mesh:unprotect-buffer (buffername)
+  (with-current-buffer buffername
+    (emacs-lock-mode -1)))
+
 (cl-defun mesh:pane--new (sname tname tindex)
   (cl-letf* ((buffer (mesh:pane--get-buffer-create
                       sname tname tindex 0)))
@@ -65,8 +74,8 @@
               (glof:assoc state
                           :current-session newsession
                           :sessions
-                (mesh:tab--subst-session state
-                                       newsession cursession)))))))))
+                          (mesh:tab--subst-session state
+                                                 newsession cursession)))))))))
 
 (cl-defun mesh:pane--command-kill (state)
   (cl-letf* ((oldsession (glof:get state :current-session))
@@ -92,8 +101,8 @@
          (glof:assoc state
                      :current-session newsession
                      :sessions
-           (mesh:tab--subst-session state
-                                  newsession oldsession))))
+                     (mesh:tab--subst-session state
+                                            newsession oldsession))))
       (_
        (setq mesh:*state* (mesh:pane--command-next mesh:*state*))
        (setq mesh:*state* (mesh:pane--kill mesh:*state*
@@ -107,6 +116,8 @@
 (cl-defun mesh:pane--kill-buffer (pane)
   (cl-letf* ((buffer (glof:get pane :buffer))
              (windowtokill (get-buffer-window buffer)))
+    (mesh:unprotect-buffer
+     (buffer-name buffer))
     (with-current-buffer buffer
       (kill-buffer buffer)
       (delete-window windowtokill))))
@@ -121,11 +132,11 @@
                           :conf (current-window-configuration)
                           :current-pane nextpane
                           :panes
-                           (mesh:removev
-                            (lambda (pane)
-                              (eq (glof:get pane :index)
-                                  (glof:get oldpane :index)))
-                            (glof:get oldtab :panes)))))
+                          (mesh:removev
+                           (lambda (pane)
+                             (eq (glof:get pane :index)
+                                 (glof:get oldpane :index)))
+                           (glof:get oldtab :panes)))))
                (newtabs (mesh:substitute-if-v newtab
                                             (lambda (tab)
                                               (eq (glof:get tab :index)
@@ -137,8 +148,8 @@
         (glof:assoc state
                     :current-session newsession
                     :sessions
-          (mesh:tab--subst-session state
-                                 newsession oldsession))))))
+                    (mesh:tab--subst-session state
+                                           newsession oldsession))))))
 
 (cl-defun mesh:pane--make-buffer-eshell-mode (buffer)
   (with-current-buffer buffer
@@ -158,13 +169,19 @@
 
 (cl-defun mesh:pane--get-buffer-create
     (sname tname tindex pindex)
-  (get-buffer-create
-   (format "*%s:%s.%s:%s*"
-           sname
-           tname
-           tindex
-           pindex)))
+  (cl-letf* ((bname (mesh:pane--make-pane-name
+                     sname tname tindex pindex))
+             (buffer (get-buffer-create bname)))
+    (mesh:protect-buffer bname)
+    buffer))
 
+
+(cl-defun mesh:pane--make-pane-name (sname tname tindex pindex)
+  (format "*%s:%s.%s:%s*"
+          sname
+          tname
+          tindex
+          pindex))
 
 (provide 'mesh-pane)
 

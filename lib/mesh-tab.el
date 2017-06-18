@@ -234,10 +234,12 @@
 
 (cl-defun mesh:tab--kill-panes (tb)
   (seq-each
-   #'kill-buffer
-   (seq-map
-    (lambda (p) (glof:get p :buffer))
-    (glof:get tb :panes))))
+   (lambda (pane)
+     (cl-letf ((buffer (glof:get pane :buffer)))
+       (mesh:unprotect-buffer
+        (buffer-name buffer))
+       (kill-buffer buffer)))
+   (glof:get tb :panes)))
 
 (provide 'mesh-tab)
 
