@@ -13,7 +13,7 @@
 
 (cl-defun mesh:session--new (sname sessions)
   (let ((found (seq-find (lambda (s) (cl-equalp (glof:get s :name)
-                                           sname))
+                                                sname))
                          sessions)))
     (if (not (colle:empty-p found))
         found
@@ -60,8 +60,8 @@
           (delete-other-windows)
           (glof:assoc newstate
                       :current-session newsession
-                      :sessions (colle:conj newsession
-                                         (glof:get newstate :sessions))))))))
+                      :sessions (colle:conj (glof:get newstate :sessions)
+                                         newsession)))))))
 
 (cl-defun mesh:session--command-next (state)
   (cl-letf* ((cursession (glof:get state :current-session))
