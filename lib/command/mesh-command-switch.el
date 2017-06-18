@@ -30,7 +30,7 @@
                            (glof:assoc :conf (current-window-configuration))))
                  (newtabs (mesh:substitute-if-v newtab
                                               (lambda (tab) (eq (glof:get tab :index)
-                                                           (glof:get oldtab :index)))
+                                                                (glof:get oldtab :index)))
                                               tabs)))
         (jump-to-register mesh:*window-configuration-name*)
         (glof:assoc state
@@ -63,8 +63,8 @@
         (set-window-configuration conf)
         (glof:assoc state
                     :current-session newsession
-                    :sessions (colle:conj newsession
-                                       (glof:get state :sessions))
+                    :sessions (colle:conj (glof:get state :sessions)
+                                       newsession)
                     :inside-session-p t))
        (t
         (switch-to-buffer
@@ -85,8 +85,8 @@
                                   :tabs newtabs))))
           (glof:assoc state
                       :current-session newsession
-                      :sessions (colle:conj newsession
-                                         (glof:get state :sessions))
+                      :sessions (colle:conj (glof:get state :sessions)
+                                         newsession)
                       :inside-session-p t)))))))
 
 (provide 'mesh-command-switch)
